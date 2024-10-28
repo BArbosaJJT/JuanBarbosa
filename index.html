@@ -14,26 +14,37 @@
       margin: 0;
       padding: 0;
       background-color: #f3f3f3;
+      color: #333;
     }
     header {
-      background-color: #333;
+      background-color: #1a237e;
       color: #fff;
       padding: 20px;
       text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
     }
     nav {
-      background-color: #444;
+      background-color: #283593;
       padding: 10px;
       text-align: center;
+      position: sticky;
+      top: 60px;
     }
     nav a {
       color: #fff;
       margin: 0 15px;
       text-decoration: none;
       font-weight: bold;
+      transition: color 0.3s;
+    }
+    nav a:hover {
+      color: #ffeb3b;
     }
     h1, h2 {
       margin: 10px 0;
+      color: #1a237e;
     }
     section {
       padding: 20px;
@@ -61,10 +72,22 @@
       color: #fff;
       text-align: center;
       padding: 10px;
+      position: sticky;
+      top: 100%;
     }
     select, button {
       margin: 5px;
       padding: 5px;
+    }
+    /* Responsividad */
+    @media (max-width: 768px) {
+      nav a {
+        display: block;
+        margin: 10px 0;
+      }
+      select, button {
+        width: 100%;
+      }
     }
   </style>
 </head>
@@ -106,10 +129,8 @@
       <li><strong>Gestión de Riesgo:</strong> Desarrolla estrategias para proteger tu capital mientras maximizas el rendimiento potencial.</li>
       <li><strong>Estrategias de Trading Avanzadas:</strong> Explora estrategias complejas que pueden ayudarte a operar con confianza.</li>
     </ul>
-    <p>Lo mejor de SimulTrader es que mientras aprendes con nuestras clases, puedes aplicar lo aprendido en nuestro simulador en tiempo real, operando sin riesgo financiero y obteniendo experiencia práctica inmediata.</p>
   </section>
 
-  <!-- Nueva sección informativa sobre el trading -->
   <section id="intro-trading">
     <h2>¿Qué es el Trading?</h2>
     <p>El trading es la actividad de compra y venta de activos financieros, como acciones, divisas o criptomonedas, con el objetivo de obtener beneficios a partir de las variaciones de precio. A diferencia de la inversión a largo plazo, el trading se caracteriza por operaciones de corto plazo y requiere conocimientos sobre análisis técnico, gestión de riesgos y disciplina.</p>
@@ -143,31 +164,7 @@
       <option value="3600000">1 hora</option>
     </select>
 
-    <canvas id="stockChart" width="600" height="400"></canvas>
-
-    <h2>Gráfica de TradingView</h2>
-    <div class="tradingview-widget-container">
-      <div id="tradingview_chart"></div>
-    </div>
-
-    <label for="symbol">Selecciona un activo:</label>
-    <select id="symbol" onchange="updateTradingViewChart()">
-      <option value="NASDAQ:AAPL">Apple (AAPL)</option>
-      <option value="NASDAQ:TSLA">Tesla (TSLA)</option>
-      <option value="BINANCE:BTCUSDT">Bitcoin (BTC)</option>
-      <option value="BINANCE:ETHUSDT">Ethereum (ETH)</option>
-    </select>
-
-    <label for="interval">Intervalo:</label>
-    <select id="interval" onchange="updateTradingViewChart()">
-      <option value="1">1 minuto</option>
-      <option value="5">5 minutos</option>
-      <option value="15">15 minutos</option>
-      <option value="60">1 hora</option>
-      <option value="D">Diario</option>
-      <option value="W">Semanal</option>
-      <option value="M">Mensual</option>
-    </select>
+    <canvas id="stockChart" width="600" height="400" aria-label="Gráfico en tiempo real de precios" role="img"></canvas>
   </section>
 
   <footer>
@@ -175,7 +172,6 @@
   </footer>
 
   <script>
-    // Script para el gráfico y otras funciones
     const ctx = document.getElementById('stockChart').getContext('2d');
     let chartType = 'line';
     let currentAsset = 'AAPL';
@@ -199,17 +195,11 @@
         scales: {
           x: {
             display: true,
-            title: {
-              display: true,
-              text: 'Tiempo'
-            }
+            title: { display: true, text: 'Tiempo' }
           },
           y: {
             display: true,
-            title: {
-              display: true,
-              text: 'Precio (USD)'
-            }
+            title: { display: true, text: 'Precio (USD)' }
           }
         }
       }
@@ -227,86 +217,8 @@
     }
 
     function generateRandomPrice(asset) {
-      const basePrices = {
-        'AAPL': 150,
-        'TSLA': 700,
-        'BTC': 30000,
-        'ETH': 2000,
-        'EURUSD': 1.10,
-        'GBPUSD': 1.30
-      };
+      const basePrices = { 'AAPL': 150, 'TSLA': 700, 'BTC': 30000, 'ETH': 2000, 'EURUSD': 1.10, 'GBPUSD': 1.30 };
       const priceVariance = asset === 'BTC' || asset === 'ETH' ? 100 : 5;
-      return (basePrices[asset] + (Math.random() - 0.5) * priceVariance).toFixed(2);
-    }
+      return (basePrices[asset] + (Math.random() - 0.5
 
-    function updateChartData() {
-      currentAsset = document.getElementById('asset').value;
-      stockChart.data.labels = [];
-      stockChart.data.datasets[0].data = [];
-      stockChart.data.datasets[0].label = `Precio de ${currentAsset} (USD)`;
-      stockChart.update();
-      previousPrice = null;
-    }
-
-    function changeChartType() {
-      chartType = document.getElementById('chartType').value;
-      stockChart.destroy();
-      stockChart = new Chart(ctx, {
-        type: chartType,
-        data: {
-          labels: [],
-          datasets: [{
-            label: `Precio de ${currentAsset} (USD)`,
-            backgroundColor: chartType === 'area' ? 'rgba(0, 123, 255, 0.3)' : 'rgba(0, 123, 255, 0.1)',
-            borderColor: 'rgba(0, 123, 255, 1)',
-            data: []
-          }]
-        },
-        options: stockChart.options
-      });
-    }
-
-    function changeUpdateInterval() {
-      updateInterval = parseInt(document.getElementById('updateInterval').value);
-      clearInterval(intervalId);
-      intervalId = setInterval(updateChart, updateInterval);
-    }
-
-    function updateChart() {
-      const time = new Date().toLocaleTimeString();
-      const newPrice = parseFloat(generateRandomPrice(currentAsset));
-      const color = previousPrice !== null && newPrice > previousPrice ? 'green' : 'red';
-      addData(stockChart, time, newPrice, color);
-      previousPrice = newPrice;
-    }
-
-    intervalId = setInterval(updateChart, updateInterval);
-
-    function updateTradingViewChart() {
-      const symbol = document.getElementById('symbol').value;
-      const interval = document.getElementById('interval').value;
-
-      new TradingView.widget({
-        "container_id": "tradingview_chart",
-        "symbol": symbol,
-        "interval": interval,
-        "timezone": "exchange",
-        "theme": "light",
-        "style": "1",
-        "locale": "es",
-        "toolbar_bg": "#f1f3f6",
-        "enable_publishing": false,
-        "allow_symbol_change": true,
-        "details": true,
-        "studies": [
-          "MACD@tv-basicstudies",
-          "RSI@tv-basicstudies"
-        ]
-      });
-    }
-
-    window.onload = updateTradingViewChart;
-  </script>
-</body>
-</html>
 
