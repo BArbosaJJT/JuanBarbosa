@@ -213,10 +213,20 @@
         if (cantidad > 0 && (cantidad * precioAccion) <= saldo) {
             saldo -= cantidad * precioAccion;
             acciones += cantidad;
-            localStorage.setItem("saldo", s
+            localStorage.setItem("saldo", saldo);
+            document.getElementById("balance").innerText = "Saldo: $" + saldo;
+            mostrarAccionesCompradas();
+            alert("Compraste " + cantidad + " acciones de Apple.");
+        } else {
+            alert("Fondos insuficientes o cantidad no válida.");
+        }
+    }
 
-
-
-
-
-
+    // Función para vender acciones
+    function venderAcciones() {
+        const cantidad = parseInt(document.getElementById("cantidad").value);
+        if (cantidad > 0 && cantidad <= acciones) {
+            saldo += cantidad * precioAccion;
+            acciones -= cantidad;
+            localStorage.setItem("saldo", saldo);
+            document
