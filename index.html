@@ -37,11 +37,21 @@
       padding: 10px;
       border-radius: 5px;
     }
+    #chart-container {
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 20px;
+      background-color: #fff;
+    }
     footer {
       background-color: #333;
       color: #fff;
       text-align: center;
       padding: 10px;
+    }
+    select, button {
+      margin: 5px;
+      padding: 5px;
     }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -64,8 +74,21 @@
       <li>Evaluación de rendimiento con estadísticas detalladas</li>
     </ul>
   </section>
-  <section id="chart">
+  <section id="chart-container">
     <h2>Gráfica en Tiempo Real</h2>
+    <label for="asset">Selecciona una acción o criptomoneda:</label>
+    <select id="asset" onchange="updateChart()">
+      <option value="AAPL">Apple (AAPL)</option>
+      <option value="TSLA">Tesla (TSLA)</option>
+      <option value="BTC">Bitcoin (BTC)</option>
+      <option value="ETH">Ethereum (ETH)</option>
+    </select>
+    <label for="chartType">Tipo de gráfico:</label>
+    <select id="chartType" onchange="changeChartType()">
+      <option value="line">Línea</option>
+      <option value="bar">Barra</option>
+      <option value="area">Área</option>
+    </select>
     <canvas id="stockChart" width="600" height="400"></canvas>
   </section>
   <footer>
@@ -74,8 +97,10 @@
 
   <script>
     const ctx = document.getElementById('stockChart').getContext('2d');
-    const stockChart = new Chart(ctx, {
-      type: 'line',
+    let chartType = 'line';
+
+    let stockChart = new Chart(ctx, {
+      type: chartType,
       data: {
         labels: [],
         datasets: [{
@@ -116,12 +141,42 @@
       chart.update();
     }
 
-    setInterval(() => {
+    function generateRandomPrice(asset) {
+      const basePrices = {
+        'AAPL': 150,
+        'TSLA': 700,
+        'BTC': 30000,
+        'ETH': 2000
+      };
+      return (basePrices[asset] + (Math.random() - 0.5) * 10).toFixed(2);
+    }
+
+    function updateChart() {
+      const selectedAsset = document.getElementById('asset').value;
       const time = new Date().toLocaleTimeString();
-      const price = Math.floor(Math.random() * 100) + 50;
+      const price = generateRandomPrice(selectedAsset);
       addData(stockChart, time, price);
-    }, 1000);
+    }
+
+    function changeChartType() {
+      chartType = document.getElementById('chartType').value;
+      stockChart.destroy();
+      stockChart = new Chart(ctx, {
+        type: chartType,
+        data: {
+          labels: [],
+          datasets: [{
+            label: 'Precio de Acción (USD)',
+            backgroundColor: chartType === 'area' ? 'rgba(0, 123, 255, 0.3)' : 'rgba(0, 123, 255, 0.1)',
+            borderColor: 'rgba(0, 123, 255, 1)',
+            data: []
+          }]
+        },
+        options: stockChart.options
+      });
+    }
+
+    setInterval(updateChart, 1000);
   </script>
 </body>
 </html>
-
