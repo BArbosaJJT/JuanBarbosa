@@ -3,229 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador de Trading Mejorado</title>
+    <title>Simulador de Trading</title>
     <style>
-        /* Reset básico */
-        * {
+        /* Estilos básicos y animaciones */
+        body {
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-        }
-
-        /* Estilo de la navegación */
-        .navbar {
-            background-color: #1a1a1a;
-            color: #fff;
             display: flex;
-            justify-content: space-between;
-            padding: 1rem 2rem;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f4f6f8;
         }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            padding: 20px;
+            margin-top: 20px;
         }
-
-        .nav-links {
-            list-style: none;
+        .balance {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .modal {
             display: flex;
-        }
-
-        .nav-links li {
-            margin-left: 1.5rem;
-        }
-
-        .nav-links a {
-            color: #fff;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        /* Secciones */
-        .section {
-            padding: 3rem;
+            flex-direction: column;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 300px;
             text-align: center;
         }
-
-        #simulator {
-            background-color: #f9f9f9;
+        .modal input, .lesson-card, .exam {
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
         }
-
-        #education, #tutorial {
-            background-color: #ececec;
-        }
-
-        /* Botones */
-        button {
-            padding: 0.75rem 1.5rem;
-            margin-top: 1rem;
-            background-color: #007BFF;
-            color: #fff;
+        .modal button, .lesson-card button, .start-exam-button {
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 4px;
             cursor: pointer;
+            margin-top: 10px;
         }
-
-        button:hover {
-            background-color: #0056b3;
+        /* Animaciones */
+        .lesson-card:hover {
+            transform: scale(1.05);
+            transition: transform 0.3s;
         }
-
-        /* Saldo */
-        #balance-display {
-            margin-top: 1rem;
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-
-        /* Historial de transacciones */
-        .transaction-history {
-            margin-top: 2rem;
-            padding: 1rem;
-            background-color: #e0e0e0;
-            border-radius: 5px;
-        }
-
-        .transaction-history h3 {
-            margin-bottom: 1rem;
-        }
-
-        .transaction-item {
-            margin-bottom: 0.5rem;
+        .progress-bar {
+            height: 20px;
+            width: 0;
+            background-color: #4caf50;
+            border-radius: 10px;
+            transition: width 0.5s;
         }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
-    <!-- Barra de Navegación -->
-    <nav class="navbar">
-        <div class="logo">Trading Sim</div>
-        <ul class="nav-links">
-            <li><a href="#home">Inicio</a></li>
-            <li><a href="#simulator">Simulador de Trading</a></li>
-            <li><a href="#education">Clases de Trading</a></li>
-            <li><a href="#tutorial">Tutorial</a></li>
-        </ul>
-    </nav>
+<div class="container">
+    <h1>Simulador de Trading</h1>
+    <div class="balance" id="balance">Saldo: $0</div>
 
-    <!-- Sección de Inicio -->
-    <section id="home" class="section">
-        <h1>Bienvenido al Simulador de Trading</h1>
-        <p>Aprende a invertir y practica tus habilidades de trading sin riesgo financiero.</p>
-    </section>
+    <!-- Modal de recarga de saldo -->
+    <div class="modal" id="modalRecarga">
+        <h2>Recarga tu Saldo Inicial</h2>
+        <input type="number" id="inputSaldo" placeholder="Ingresa saldo inicial" min="100" step="100">
+        <button onclick="recargarSaldo()">Recargar</button>
+    </div>
 
-    <!-- Sección del Simulador de Trading -->
-    <section id="simulator" class="section">
-        <h2>Simulador de Trading</h2>
-        <canvas id="trading-chart" width="400" height="200"></canvas>
-        <button id="recharge-balance" onclick="rechargeBalance()">Recargar Saldo</button>
-        <button id="buy-button" onclick="buyStock()">Comprar</button>
-        <button id="sell-button" onclick="sellStock()">Vender</button>
-        <div id="balance-display">Saldo: $10000</div>
-        <div class="transaction-history">
-            <h3>Historial de Transacciones</h3>
-            <div id="transaction-list"></div>
-        </div>
-    </section>
+    <!-- Sección de gráficos -->
+    <div id="tradingview-chart" style="height: 500px; width: 100%; margin-bottom: 20px;"></div>
 
     <!-- Sección de Clases de Trading -->
-    <section id="education" class="section">
-        <h2>Clases de Trading</h2>
-        <p>Accede a cursos estructurados para aprender a invertir de manera efectiva.</p>
-        <button onclick="startCourse()">Iniciar Curso Básico</button>
-    </section>
+    <h2>Clases de Trading</h2>
+    <div id="clases">
+        <div class="lesson-card">
+            <h3>Clase 1: Introducción al Trading</h3>
+            <p>Aprende los conceptos básicos, terminología y el mercado de acciones.</p>
+            <button onclick="iniciarClase('Clase 1')">Iniciar Clase</button>
+        </div>
+        <div class="lesson-card">
+            <h3>Clase 2: Análisis Técnico Básico</h3>
+            <p>Entiende cómo leer gráficos de velas y patrones de precios.</p>
+            <button onclick="iniciarClase('Clase 2')">Iniciar Clase</button>
+        </div>
+        <!-- Agregar más clases según sea necesario -->
+    </div>
 
-    <!-- Sección de Tutorial -->
-    <section id="tutorial" class="section">
-        <h2>Tutorial de Uso</h2>
-        <p>Un recorrido paso a paso para que aprendas a usar la plataforma.</p>
-    </section>
+    <!-- Sección de Exámenes -->
+    <div id="examen" style="display:none;">
+        <h2>Examen de la Clase</h2>
+        <p>Pregunta: ¿Qué representa una vela verde en un gráfico de velas?</p>
+        <input type="text" id="respuesta" placeholder="Escribe tu respuesta">
+        <button onclick="verificarRespuesta()">Enviar Respuesta</button>
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+</div>
 
-    <script>
-        // Variables globales
-        let balance = 10000; // Saldo inicial
-        let transactions = [];
-
-        // Inicializar el gráfico
-        const ctx = document.getElementById('trading-chart').getContext('2d');
-        const chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ["1", "2", "3", "4", "5", "6", "7"], // Etiquetas temporales
-                datasets: [{
-                    label: 'Precio de la Acción',
-                    data: [120, 130, 125, 140, 135, 145, 150],
-                    borderColor: '#007BFF',
-                    borderWidth: 2,
-                    fill: false
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    x: {
-                        title: { display: true, text: 'Tiempo' }
-                    },
-                    y: {
-                        title: { display: true, text: 'Precio ($)' }
-                    }
-                }
-            }
-        });
-
-        // Función para actualizar el saldo
-        function updateBalanceDisplay() {
-            document.getElementById("balance-display").innerText = `Saldo: $${balance}`;
+<!-- Script para TradingView -->
+<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+<script>
+    // Función para manejar la recarga de saldo
+    function recargarSaldo() {
+        const inputSaldo = document.getElementById("inputSaldo");
+        const saldo = parseFloat(inputSaldo.value);
+        if (saldo > 0) {
+            localStorage.setItem("saldo", saldo);
+            document.getElementById("balance").innerText = "Saldo: $" + saldo;
+            document.getElementById("modalRecarga").style.display = "none";
+        } else {
+            alert("Por favor, ingresa un saldo válido.");
         }
+    }
 
-        // Función para agregar una transacción al historial
-        function addTransaction(type, amount) {
-            const transaction = { type, amount, balance };
-            transactions.push(transaction);
-            const transactionItem = document.createElement("div");
-            transactionItem.className = "transaction-item";
-            transactionItem.innerText = `${type} - $${amount} - Saldo: $${balance}`;
-            document.getElementById("transaction-list").appendChild(transactionItem);
+    // Mostrar el saldo guardado o mostrar el modal de recarga
+    window.onload = function() {
+        const saldoGuardado = parseFloat(localStorage.getItem("saldo"));
+        if (saldoGuardado && saldoGuardado > 0) {
+            document.getElementById("balance").innerText = "Saldo: $" + saldoGuardado;
+            document.getElementById("modalRecarga").style.display = "none";
+        } else {
+            document.getElementById("modalRecarga").style.display = "flex";
         }
+    };
 
-        // Función para recargar saldo
-        function rechargeBalance() {
-            alert("Recargando saldo ficticio...");
-            balance += 1000;
-            updateBalanceDisplay();
-            addTransaction("Recarga", 1000);
+    // Script para integrar el gráfico de TradingView
+    new TradingView.widget({
+        "container_id": "tradingview-chart",
+        "width": "100%",
+        "height": "500",
+        "symbol": "NASDAQ:AAPL",
+        "interval": "D",
+        "timezone": "Etc/UTC",
+        "theme": "light",
+        "style": "1",
+        "locale": "es",
+        "toolbar_bg": "#f1f3f6",
+        "enable_publishing": false,
+        "hide_side_toolbar": false,
+        "allow_symbol_change": true,
+        "studies": ["RSI@tv-basicstudies"],
+        "show_popup_button": true,
+        "popup_width": "1000",
+        "popup_height": "650"
+    });
+
+    // Función para iniciar una clase
+    function iniciarClase(clase) {
+        alert("Iniciando " + clase);
+        document.getElementById("examen").style.display = "block";
+    }
+
+    // Función para verificar la respuesta del examen
+    function verificarRespuesta() {
+        const respuesta = document.getElementById("respuesta").value.toLowerCase();
+        if (respuesta === "aumento de precio" || respuesta === "subida") {
+            alert("¡Correcto!");
+            document.getElementById("progressBar").style.width = "100%";
+        } else {
+            alert("Respuesta incorrecta, intenta de nuevo.");
         }
+    }
+</script>
 
-        // Función para comprar acciones
-        function buyStock() {
-            if (balance >= 500) {
-                balance -= 500;
-                updateBalanceDisplay();
-                addTransaction("Compra", 500);
-                alert("Acción comprada por $500");
-            } else {
-                alert("Saldo insuficiente para comprar");
-            }
-        }
-
-        // Función para vender acciones
-        function sellStock() {
-            balance += 500;
-            updateBalanceDisplay();
-            addTransaction("Venta", 500);
-            alert("Acción vendida por $500");
-        }
-
-        // Función para iniciar el curso
-        function startCourse() {
-            alert("Iniciando el curso básico de trading.");
-        }
-
-        // Inicializar el saldo al cargar la página
-        document.addEventListener("DOMContentLoaded", updateBalanceDisplay);
-    </script>
 </body>
 </html>
+
 
 
 
