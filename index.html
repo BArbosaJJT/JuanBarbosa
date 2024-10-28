@@ -75,6 +75,20 @@
       <li>Evaluación de rendimiento con estadísticas detalladas</li>
     </ul>
   </section>
+  
+  <!-- Nueva Sección: Clases -->
+  <section id="classes">
+    <h2>Clases de Trading</h2>
+    <p>En SimulTrader, creemos que la educación es la clave para el éxito en el mundo del trading. A través de nuestras clases, nuestros clientes pueden aprender sobre temas fundamentales y avanzados en trading, sin importar su nivel de experiencia.</p>
+    <ul>
+      <li><strong>Principios Básicos de Trading:</strong> Aprende los fundamentos del mercado y cómo se comportan las diferentes clases de activos.</li>
+      <li><strong>Análisis Técnico:</strong> Entiende cómo leer gráficos y utiliza indicadores técnicos para tomar decisiones informadas.</li>
+      <li><strong>Gestión de Riesgo:</strong> Desarrolla estrategias para proteger tu capital mientras maximizas el rendimiento potencial.</li>
+      <li><strong>Estrategias de Trading Avanzadas:</strong> Explora estrategias complejas que pueden ayudarte a operar con confianza.</li>
+    </ul>
+    <p>Lo mejor de SimulTrader es que mientras aprendes con nuestras clases, puedes aplicar lo aprendido en nuestro simulador en tiempo real, operando sin riesgo financiero y obteniendo experiencia práctica inmediata.</p>
+  </section>
+
   <section id="chart-container">
     <h2>Gráfica en Tiempo Real</h2>
     <label for="asset">Selecciona una acción o divisa:</label>
@@ -239,7 +253,6 @@
 
     intervalId = setInterval(updateChart, updateInterval);
 
-    // Inicialización del gráfico de TradingView
     function updateTradingViewChart() {
       const symbol = document.getElementById('symbol').value;
       const interval = document.getElementById('interval').value;
@@ -263,7 +276,6 @@
       });
     }
 
-    // Inicializar el gráfico de TradingView al cargar la página
     window.onload = updateTradingViewChart;
   </script>
 </body>
