@@ -21,6 +21,17 @@
       padding: 20px;
       text-align: center;
     }
+    nav {
+      background-color: #444;
+      padding: 10px;
+      text-align: center;
+    }
+    nav a {
+      color: #fff;
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+    }
     h1, h2 {
       margin: 10px 0;
     }
@@ -29,11 +40,11 @@
       max-width: 800px;
       margin: auto;
     }
-    #features ul {
+    #features ul, #classes ul {
       list-style-type: none;
       padding: 0;
     }
-    #features li {
+    #features li, #classes li {
       background: #e1e4e8;
       margin: 5px 0;
       padding: 10px;
@@ -62,11 +73,21 @@
     <h1>SimulTrader</h1>
     <p>Tu simulador de trading en tiempo real</p>
   </header>
+
+  <!-- Menú de navegación -->
+  <nav>
+    <a href="#about">Sobre Nosotros</a>
+    <a href="#features">Características</a>
+    <a href="#classes">Clases de Trading</a>
+    <a href="#intro-trading">¿Qué es el Trading?</a>
+  </nav>
+
   <section id="about">
     <h2>Sobre Nosotros</h2>
     <p><strong>Misión:</strong> Brindar una plataforma educativa de simulación de trading para ayudar a los nuevos inversores a adquirir experiencia sin riesgo financiero.</p>
     <p><strong>Visión:</strong> Ser la plataforma líder en simulación de trading, facilitando el acceso a herramientas educativas de inversión a nivel global.</p>
   </section>
+
   <section id="features">
     <h2>Características</h2>
     <ul>
@@ -75,8 +96,7 @@
       <li>Evaluación de rendimiento con estadísticas detalladas</li>
     </ul>
   </section>
-  
-  <!-- Nueva Sección: Clases -->
+
   <section id="classes">
     <h2>Clases de Trading</h2>
     <p>En SimulTrader, creemos que la educación es la clave para el éxito en el mundo del trading. A través de nuestras clases, nuestros clientes pueden aprender sobre temas fundamentales y avanzados en trading, sin importar su nivel de experiencia.</p>
@@ -87,6 +107,13 @@
       <li><strong>Estrategias de Trading Avanzadas:</strong> Explora estrategias complejas que pueden ayudarte a operar con confianza.</li>
     </ul>
     <p>Lo mejor de SimulTrader es que mientras aprendes con nuestras clases, puedes aplicar lo aprendido en nuestro simulador en tiempo real, operando sin riesgo financiero y obteniendo experiencia práctica inmediata.</p>
+  </section>
+
+  <!-- Nueva sección informativa sobre el trading -->
+  <section id="intro-trading">
+    <h2>¿Qué es el Trading?</h2>
+    <p>El trading es la actividad de compra y venta de activos financieros, como acciones, divisas o criptomonedas, con el objetivo de obtener beneficios a partir de las variaciones de precio. A diferencia de la inversión a largo plazo, el trading se caracteriza por operaciones de corto plazo y requiere conocimientos sobre análisis técnico, gestión de riesgos y disciplina.</p>
+    <p>Los traders utilizan herramientas como gráficos en tiempo real, indicadores técnicos y estrategias diversas para anticipar movimientos en el mercado. Sin embargo, el trading también implica riesgos, por lo que la educación y la práctica son esenciales para tener éxito.</p>
   </section>
 
   <section id="chart-container">
@@ -142,11 +169,13 @@
       <option value="M">Mensual</option>
     </select>
   </section>
+
   <footer>
     <p>&copy; 2024 SimulTrader. Todos los derechos reservados.</p>
   </footer>
 
   <script>
+    // Script para el gráfico y otras funciones
     const ctx = document.getElementById('stockChart').getContext('2d');
     let chartType = 'line';
     let currentAsset = 'AAPL';
@@ -280,3 +309,4 @@
   </script>
 </body>
 </html>
+
