@@ -1,231 +1,167 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SimulTrader - Plataforma de Trading Simulada</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <style>
-    /* Reset y Estilos Generales */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    body {
-      font-family: 'Poppins', sans-serif;
-      background-color: #1E1E1E;
-      color: #E5E5E5;
-      overflow-x: hidden;
-    }
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
-    
-    /* Encabezado */
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px 30px;
-      background-color: #252525;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    }
-    .logo {
-      color: #FFD700;
-      font-size: 1.5em;
-      font-weight: 600;
-    }
-    nav a {
-      color: #E5E5E5;
-      margin: 0 15px;
-      font-weight: 500;
-    }
-    .user-menu {
-      color: #FFD700;
-    }
-    
-    /* Dashboard Principal */
-    .dashboard {
-      max-width: 1200px;
-      margin: 50px auto;
-      padding: 20px;
-      display: grid;
-      grid-template-columns: 1fr 3fr;
-      gap: 20px;
-    }
-    .sidebar, .main-content {
-      background-color: #2C2C2C;
-      border-radius: 8px;
-      padding: 20px;
-    }
-    
-    /* Sidebar */
-    .sidebar {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 30px 20px;
-    }
-    .sidebar h3 {
-      color: #FFD700;
-      font-size: 1.2em;
-      margin-bottom: 20px;
-    }
-    .balance-card {
-      background: #1E1E1E;
-      padding: 15px;
-      border-radius: 8px;
-      text-align: center;
-      width: 100%;
-      margin-bottom: 20px;
-    }
-    .balance-card h4 {
-      color: #FFD700;
-    }
-    .balance-card p {
-      font-size: 1.5em;
-      font-weight: bold;
-    }
-    
-    /* Main Content */
-    .main-content h2 {
-      color: #FFD700;
-      margin-bottom: 20px;
-    }
-    .trading-chart {
-      background: #1E1E1E;
-      border-radius: 8px;
-      padding: 20px;
-      height: 400px;
-    }
-    
-    /* Tabla de Actividad Reciente */
-    .activity-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    .activity-table th, .activity-table td {
-      padding: 10px;
-      border: 1px solid #444;
-      text-align: center;
-    }
-    .activity-table th {
-      background: #333;
-    }
-    
-    /* Noticias */
-    .news-feed {
-      background-color: #2C2C2C;
-      padding: 20px;
-      border-radius: 8px;
-      margin-top: 20px;
-    }
-    .news-feed h3 {
-      color: #FFD700;
-    }
-    
-    /* Footer */
-    footer {
-      background: #252525;
-      padding: 20px;
-      text-align: center;
-      margin-top: 30px;
-    }
-    footer p {
-      font-size: 0.9em;
-      color: #999;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Trading</title>
+    <style>
+        /* Reset básico */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Estilo de la navegación */
+        .navbar {
+            background-color: #1a1a1a;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+        }
+
+        .nav-links li {
+            margin-left: 1.5rem;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* Secciones */
+        .section {
+            padding: 3rem;
+            text-align: center;
+        }
+
+        #simulator {
+            background-color: #f9f9f9;
+        }
+
+        #education, #tutorial {
+            background-color: #ececec;
+        }
+
+        /* Botones */
+        button {
+            padding: 0.75rem 1.5rem;
+            margin-top: 1rem;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Saldo */
+        #balance-display {
+            margin-top: 1rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
 
-  <!-- Encabezado -->
-  <header>
-    <div class="logo">SimulTrader</div>
-    <nav>
-      <a href="#dashboard">Dashboard</a>
-      <a href="#news">Noticias</a>
-      <a href="#activity">Actividad</a>
-      <a href="#contact">Contacto</a>
+    <!-- Barra de Navegación -->
+    <nav class="navbar">
+        <div class="logo">Trading Sim</div>
+        <ul class="nav-links">
+            <li><a href="#home">Inicio</a></li>
+            <li><a href="#simulator">Simulador de Trading</a></li>
+            <li><a href="#education">Clases de Trading</a></li>
+            <li><a href="#tutorial">Tutorial</a></li>
+        </ul>
     </nav>
-    <div class="user-menu"><i class="fas fa-user-circle"></i></div>
-  </header>
 
-  <!-- Dashboard -->
-  <section id="dashboard" class="dashboard">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-      <h3>Balance de Cuenta</h3>
-      <div class="balance-card">
-        <h4>Saldo Actual</h4>
-        <p>$10,000</p>
-      </div>
-      <div class="balance-card">
-        <h4>Ganancias Diarias</h4>
-        <p>+$250</p>
-      </div>
-    </aside>
-    
-    <!-- Main Content -->
-    <div class="main-content">
-      <h2>Gráfico de Trading en Tiempo Real</h2>
-      <div class="trading-chart">
-        <!-- Aquí iría el iframe de TradingView para mostrar gráficos en tiempo real -->
-        <iframe src="https://es.tradingview.com/chart/" style="width:100%; height:100%;" frameborder="0"></iframe>
-      </div>
+    <!-- Sección de Inicio -->
+    <section id="home" class="section">
+        <h1>Bienvenido al Simulador de Trading</h1>
+        <p>Aprende a invertir y practica tus habilidades de trading sin riesgo financiero.</p>
+    </section>
 
-      <!-- Tabla de Actividad Reciente -->
-      <h2>Actividad Reciente</h2>
-      <table class="activity-table">
-        <thead>
-          <tr>
-            <th>Fecha</th>
-            <th>Activo</th>
-            <th>Entrada</th>
-            <th>Salida</th>
-            <th>Ganancia/Pérdida</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>2024-10-28</td>
-            <td>EUR/USD</td>
-            <td>1.1050</td>
-            <td>1.1150</td>
-            <td>+$100</td>
-          </tr>
-          <tr>
-            <td>2024-10-27</td>
-            <td>BTC/USD</td>
-            <td>60,000</td>
-            <td>62,500</td>
-            <td>+$500</td>
-          </tr>
-          <!-- Más filas aquí -->
-        </tbody>
-      </table>
-    </div>
-  </section>
+    <!-- Sección del Simulador de Trading -->
+    <section id="simulator" class="section">
+        <h2>Simulador de Trading</h2>
+        <div id="trading-chart">Cargando gráfico...</div>
+        <button id="recharge-balance" onclick="rechargeBalance()">Recargar Saldo</button>
+        <button id="buy-button" onclick="buyStock()">Comprar</button>
+        <button id="sell-button" onclick="sellStock()">Vender</button>
+        <div id="balance-display">Saldo: $10000</div>
+    </section>
 
-  <!-- Sección de Noticias -->
-  <section id="news" class="news-feed">
-    <h3>Últimas Noticias del Mercado</h3>
-    <ul>
-      <li>Bitcoin alcanza un nuevo máximo histórico...</li>
-      <li>El mercado de acciones cierra en rojo...</li>
-      <!-- Más noticias -->
-    </ul>
-  </section>
+    <!-- Sección de Clases de Trading -->
+    <section id="education" class="section">
+        <h2>Clases de Trading</h2>
+        <p>Accede a cursos estructurados para aprender a invertir de manera efectiva.</p>
+        <button onclick="startCourse()">Iniciar Curso Básico</button>
+    </section>
 
-  <!-- Footer -->
-  <footer>
-    <p>&copy; 2024 SimulTrader. Todos los derechos reservados.</p>
-  </footer>
+    <!-- Sección de Tutorial -->
+    <section id="tutorial" class="section">
+        <h2>Tutorial de Uso</h2>
+        <p>Un recorrido paso a paso para que aprendas a usar la plataforma.</p>
+    </section>
 
+    <script>
+        // Variables globales
+        let balance = 10000; // Saldo inicial
+
+        // Función para actualizar la visualización del saldo
+        function updateBalanceDisplay() {
+            document.getElementById("balance-display").innerText = `Saldo: $${balance}`;
+        }
+
+        // Función para iniciar la recarga de saldo
+        function rechargeBalance() {
+            alert("Recargando saldo ficticio...");
+            balance += 1000; // Añadir $1000 al saldo como ejemplo
+            updateBalanceDisplay();
+        }
+
+        // Función para comprar acciones
+        function buyStock() {
+            if (balance >= 500) { // Ejemplo de compra de $500
+                balance -= 500;
+                updateBalanceDisplay();
+                alert("Acción comprada por $500");
+            } else {
+                alert("Saldo insuficiente para comprar");
+            }
+        }
+
+        // Función para vender acciones
+        function sellStock() {
+            balance += 500; // Ejemplo de venta de $500
+            updateBalanceDisplay();
+            alert("Acción vendida por $500");
+        }
+
+        // Función para iniciar el curso
+        function startCourse() {
+            alert("Iniciando el curso básico de trading.");
+        }
+
+        // Inicializar el saldo al cargar la página
+        document.addEventListener("DOMContentLoaded", updateBalanceDisplay);
+    </script>
 </body>
 </html>
 
