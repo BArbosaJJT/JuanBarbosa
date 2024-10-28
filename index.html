@@ -93,7 +93,7 @@
 </head>
 <body>
   <header>
-    <h1>SimulTrader<h1>
+    <h1>SimulTrader</h1>
     <p>Tu simulador de trading en tiempo real</p>
   </header>
 
@@ -219,6 +219,43 @@
     function generateRandomPrice(asset) {
       const basePrices = { 'AAPL': 150, 'TSLA': 700, 'BTC': 30000, 'ETH': 2000, 'EURUSD': 1.10, 'GBPUSD': 1.30 };
       const priceVariance = asset === 'BTC' || asset === 'ETH' ? 100 : 5;
-      return (basePrices[asset] + (Math.random() - 0.5
+      return (basePrices[asset] + (Math.random() - 0.5) * priceVariance).toFixed(2);
+    }
+
+    function updateChartData() {
+      currentAsset = document.getElementById('asset').value;
+      clearInterval(intervalId);
+      intervalId = setInterval(fetchPriceData, updateInterval);
+      stockChart.data.datasets[0].label = `Precio de ${currentAsset} (USD)`;
+    }
+
+    function changeChartType() {
+      stockChart.destroy();
+      chartType = document.getElementById('chartType').value;
+      stockChart = new Chart(ctx, {
+        type: chartType,
+        data: stockChart.data,
+        options: stockChart.options
+      });
+    }
+
+    function changeUpdateInterval() {
+      updateInterval = parseInt(document.getElementById('updateInterval').value);
+      clearInterval(intervalId);
+      intervalId = setInterval(fetchPriceData, updateInterval);
+    }
+
+    function fetchPriceData() {
+      const price = generateRandomPrice(currentAsset);
+      const color = price >= previousPrice ? 'rgba(0, 255, 0, 1)' : 'rgba(255, 0, 0, 1)';
+      previousPrice = price;
+      addData(stockChart, new Date().toLocaleTimeString(), price, color);
+    }
+
+    intervalId = setInterval(fetchPriceData, updateInterval);
+  </script>
+</body>
+</html>
+
 
 
