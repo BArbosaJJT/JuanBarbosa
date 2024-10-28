@@ -4,210 +4,166 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SimulTrader</title>
-  <!-- Incluir estilos de TradingView -->
-  <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
-    /* Estilos generales y diseño oscuro */
+    /* Reset y Estilos Generales */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Poppins', sans-serif;
       background-color: #1E1E1E;
-      color: #FFFFFF;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-    header {
-      background-color: #252525;
-      padding: 20px;
-      text-align: center;
-      font-size: 1.5em;
-      font-weight: bold;
       color: #E5E5E5;
-      border-bottom: 1px solid #333;
+      overflow-x: hidden;
     }
-    nav {
-      background-color: #2C2C2C;
-      display: flex;
-      justify-content: center;
-      padding: 10px;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
+    h2 {
+      color: #FFD700;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    /* Animaciones */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .fade-in.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .hover-effect {
+      filter: grayscale(100%);
+      transition: filter 0.4s ease;
+    }
+    .hover-effect:hover {
+      filter: grayscale(0%);
+    }
+
+    /* Estructura de la Página */
+    header, footer {
+      padding: 20px;
+      background-color: #252525;
+      text-align: center;
     }
     nav a {
       color: #E5E5E5;
+      margin: 0 15px;
       text-decoration: none;
-      font-size: 1em;
-      margin: 0 20px;
+      font-weight: 600;
       transition: color 0.3s;
     }
     nav a:hover {
       color: #FFD700;
     }
-    section {
+    .section {
+      max-width: 1200px;
+      margin: 50px auto;
       padding: 20px;
-      max-width: 1000px;
-      margin: auto;
-      color: #E5E5E5;
-    }
-    h2 {
-      margin: 15px 0;
-      font-size: 1.8em;
-      color: #FFD700;
       text-align: center;
     }
     .content-box {
-      background-color: #2B2B2B;
-      padding: 20px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    }
-    footer {
-      background-color: #252525;
-      color: #E5E5E5;
-      text-align: center;
-      padding: 10px;
-      margin-top: auto;
-      border-top: 1px solid #333;
-    }
-    /* Estilos para el contenedor de la gráfica */
-    #chart-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      background-color: #1E1E1E;
-      padding: 20px;
-      border-radius: 8px;
-      margin: auto;
-    }
-    .select-group {
       display: flex;
       justify-content: center;
-      gap: 10px;
-      margin-bottom: 15px;
+      flex-wrap: wrap;
+      gap: 30px;
+      padding: 20px;
     }
-    select {
-      padding: 8px;
-      border-radius: 5px;
-      border: none;
-      outline: none;
-      background-color: #3A3A3A;
-      color: #E5E5E5;
-      font-size: 1em;
+    .card {
+      background-color: #2C2C2C;
+      border-radius: 8px;
+      padding: 20px;
+      width: 300px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease;
     }
-    @media (max-width: 768px) {
-      nav a {
-        font-size: 0.9em;
-        margin: 0 10px;
-      }
-      h2 {
-        font-size: 1.5em;
-      }
+    .card:hover {
+      transform: scale(1.05);
+    }
+    footer p {
+      font-size: 0.9em;
+      color: #999;
     }
   </style>
 </head>
 <body>
 
+  <!-- Header -->
   <header>
-    SimulTrader
+    <h1>SimulTrader</h1>
+    <nav>
+      <a href="#about">Sobre Nosotros</a>
+      <a href="#features">Características</a>
+      <a href="#services">Servicios</a>
+      <a href="#contact">Contacto</a>
+    </nav>
   </header>
 
-  <!-- Menú de navegación -->
-  <nav>
-    <a href="#about">Sobre Nosotros</a>
-    <a href="#features">Características</a>
-    <a href="#classes">Clases de Trading</a>
-    <a href="#intro-trading">¿Qué es el Trading?</a>
-  </nav>
-
-  <section id="about" class="content-box">
+  <!-- Sección: Sobre Nosotros -->
+  <section id="about" class="section fade-in">
     <h2>Sobre Nosotros</h2>
-    <p>SimulTrader es una plataforma educativa para aprender sobre el trading y adquirir experiencia sin riesgos. Nuestro objetivo es educar y permitir a los usuarios practicar sus estrategias de inversión.</p>
+    <p>SimulTrader es una plataforma de simulación de trading que permite a los usuarios aprender y practicar sus estrategias de inversión en un ambiente sin riesgos.</p>
   </section>
 
-  <section id="features" class="content-box">
+  <!-- Sección: Características -->
+  <section id="features" class="section fade-in">
     <h2>Características</h2>
-    <ul>
-      <li>Gráficos en tiempo real de TradingView</li>
-      <li>Simulación de estrategias de trading</li>
-      <li>Estadísticas de rendimiento detalladas</li>
-    </ul>
-  </section>
-
-  <section id="classes" class="content-box">
-    <h2>Clases de Trading</h2>
-    <p>Ofrecemos clases sobre principios básicos, análisis técnico, gestión de riesgo, y estrategias avanzadas para que puedas aprender a operar en los mercados financieros con confianza.</p>
-  </section>
-
-  <section id="intro-trading" class="content-box">
-    <h2>¿Qué es el Trading?</h2>
-    <p>El trading consiste en la compra y venta de activos financieros en períodos cortos para obtener beneficios. Implica análisis de mercado, estrategias y disciplina para gestionar los riesgos y tomar decisiones informadas.</p>
-  </section>
-
-  <section id="chart-container">
-    <h2>Gráfica en Tiempo Real</h2>
-    <div class="select-group">
-      <label for="asset">Selecciona un activo:</label>
-      <select id="asset" onchange="updateTradingViewWidget()">
-        <option value="AAPL">Apple (AAPL)</option>
-        <option value="TSLA">Tesla (TSLA)</option>
-        <option value="BTCUSD">Bitcoin (BTC/USD)</option>
-        <option value="ETHUSD">Ethereum (ETH/USD)</option>
-        <option value="EURUSD">Euro/Dólar (EUR/USD)</option>
-        <option value="GBPUSD">Libra/Dólar (GBP/USD)</option>
-      </select>
+    <div class="content-box">
+      <div class="card hover-effect">
+        <h3>Gráficos en Tiempo Real</h3>
+        <p>Utilizamos gráficos de TradingView para ofrecer datos actualizados y análisis técnico en tiempo real.</p>
+      </div>
+      <div class="card hover-effect">
+        <h3>Simulación de Trading</h3>
+        <p>Prueba tus estrategias de trading en un entorno seguro y aprende sin correr riesgos financieros.</p>
+      </div>
+      <div class="card hover-effect">
+        <h3>Estadísticas Detalladas</h3>
+        <p>Obtén un análisis detallado de tu rendimiento para mejorar tus habilidades de inversión.</p>
+      </div>
     </div>
-    <div id="tradingview_widget"></div>
   </section>
 
+  <!-- Sección: Servicios -->
+  <section id="services" class="section fade-in">
+    <h2>Servicios</h2>
+    <div class="content-box">
+      <div class="card hover-effect">
+        <h3>Clases de Trading</h3>
+        <p>Aprende los principios básicos y avanzados del trading con nuestras clases personalizadas.</p>
+      </div>
+      <div class="card hover-effect">
+        <h3>Asesoría Financiera</h3>
+        <p>Nuestros expertos están aquí para ayudarte a crear estrategias de inversión sólidas.</p>
+      </div>
+      <div class="card hover-effect">
+        <h3>Simulador de Mercado</h3>
+        <p>Utiliza nuestro simulador de mercado para practicar tus habilidades sin perder dinero.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
   <footer>
-    &copy; 2024 SimulTrader. Todos los derechos reservados.
+    <p>&copy; 2024 SimulTrader. Todos los derechos reservados.</p>
   </footer>
 
   <script>
-    // Función para cargar el widget de TradingView
-    function loadTradingViewWidget(asset = 'AAPL') {
-      new TradingView.widget({
-        "container_id": "tradingview_widget",
-        "width": "100%",
-        "height": 500,
-        "symbol": asset,
-        "interval": "D",
-        "timezone": "America/New_York",
-        "theme": "dark",
-        "style": "1",
-        "locale": "es",
-        "toolbar_bg": "#1E1E1E",
-        "enable_publishing": false,
-        "allow_symbol_change": true,
-        "studies": [
-          "MACD@tv-basicstudies",
-          "RSI@tv-basicstudies"
-        ],
-        "hideideas": true
+    // Función para activar animaciones al hacer scroll
+    window.addEventListener('scroll', () => {
+      document.querySelectorAll('.fade-in').forEach(el => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight - 100) {
+          el.classList.add('active');
+        }
       });
-    }
-
-    // Llama a la función por primera vez al cargar la página
-    loadTradingViewWidget();
-
-    // Cambia el activo seleccionado en el widget
-    function updateTradingViewWidget() {
-      const asset = document.getElementById('asset').value;
-      document.getElementById('tradingview_widget').innerHTML = ''; // Limpia el widget actual
-      loadTradingViewWidget(asset); // Carga el nuevo widget con el activo seleccionado
-    }
+    });
   </script>
 
 </body>
 </html>
-
 
 
 
