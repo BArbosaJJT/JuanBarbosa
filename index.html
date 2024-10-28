@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador de Trading</title>
+    <title>Simulador de Trading Mejorado</title>
     <style>
         /* Reset básico */
         * {
@@ -76,7 +76,24 @@
             font-size: 1.2rem;
             font-weight: bold;
         }
+
+        /* Historial de transacciones */
+        .transaction-history {
+            margin-top: 2rem;
+            padding: 1rem;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+        }
+
+        .transaction-history h3 {
+            margin-bottom: 1rem;
+        }
+
+        .transaction-item {
+            margin-bottom: 0.5rem;
+        }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
@@ -100,11 +117,15 @@
     <!-- Sección del Simulador de Trading -->
     <section id="simulator" class="section">
         <h2>Simulador de Trading</h2>
-        <div id="trading-chart">Cargando gráfico...</div>
+        <canvas id="trading-chart" width="400" height="200"></canvas>
         <button id="recharge-balance" onclick="rechargeBalance()">Recargar Saldo</button>
         <button id="buy-button" onclick="buyStock()">Comprar</button>
         <button id="sell-button" onclick="sellStock()">Vender</button>
         <div id="balance-display">Saldo: $10000</div>
+        <div class="transaction-history">
+            <h3>Historial de Transacciones</h3>
+            <div id="transaction-list"></div>
+        </div>
     </section>
 
     <!-- Sección de Clases de Trading -->
@@ -123,24 +144,64 @@
     <script>
         // Variables globales
         let balance = 10000; // Saldo inicial
+        let transactions = [];
 
-        // Función para actualizar la visualización del saldo
+        // Inicializar el gráfico
+        const ctx = document.getElementById('trading-chart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ["1", "2", "3", "4", "5", "6", "7"], // Etiquetas temporales
+                datasets: [{
+                    label: 'Precio de la Acción',
+                    data: [120, 130, 125, 140, 135, 145, 150],
+                    borderColor: '#007BFF',
+                    borderWidth: 2,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Tiempo' }
+                    },
+                    y: {
+                        title: { display: true, text: 'Precio ($)' }
+                    }
+                }
+            }
+        });
+
+        // Función para actualizar el saldo
         function updateBalanceDisplay() {
             document.getElementById("balance-display").innerText = `Saldo: $${balance}`;
         }
 
-        // Función para iniciar la recarga de saldo
+        // Función para agregar una transacción al historial
+        function addTransaction(type, amount) {
+            const transaction = { type, amount, balance };
+            transactions.push(transaction);
+            const transactionItem = document.createElement("div");
+            transactionItem.className = "transaction-item";
+            transactionItem.innerText = `${type} - $${amount} - Saldo: $${balance}`;
+            document.getElementById("transaction-list").appendChild(transactionItem);
+        }
+
+        // Función para recargar saldo
         function rechargeBalance() {
             alert("Recargando saldo ficticio...");
-            balance += 1000; // Añadir $1000 al saldo como ejemplo
+            balance += 1000;
             updateBalanceDisplay();
+            addTransaction("Recarga", 1000);
         }
 
         // Función para comprar acciones
         function buyStock() {
-            if (balance >= 500) { // Ejemplo de compra de $500
+            if (balance >= 500) {
                 balance -= 500;
                 updateBalanceDisplay();
+                addTransaction("Compra", 500);
                 alert("Acción comprada por $500");
             } else {
                 alert("Saldo insuficiente para comprar");
@@ -149,8 +210,9 @@
 
         // Función para vender acciones
         function sellStock() {
-            balance += 500; // Ejemplo de venta de $500
+            balance += 500;
             updateBalanceDisplay();
+            addTransaction("Venta", 500);
             alert("Acción vendida por $500");
         }
 
@@ -164,6 +226,7 @@
     </script>
 </body>
 </html>
+
 
 
 
