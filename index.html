@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SimulTrader</title>
+  <title>SimulTrader - Plataforma de Trading Simulada</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     /* Reset y Estilos Generales */
     * {
@@ -18,69 +19,121 @@
       color: #E5E5E5;
       overflow-x: hidden;
     }
-    h2 {
-      color: #FFD700;
-      text-align: center;
-      margin-bottom: 20px;
+    a {
+      text-decoration: none;
+      color: inherit;
     }
     
-    /* Animaciones */
-    .fade-in {
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.8s ease, transform 0.8s ease;
-    }
-    .fade-in.active {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    .hover-effect {
-      filter: grayscale(100%);
-      transition: filter 0.4s ease;
-    }
-    .hover-effect:hover {
-      filter: grayscale(0%);
-    }
-
-    /* Estructura de la Página */
-    header, footer {
-      padding: 20px;
+    /* Encabezado */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 30px;
       background-color: #252525;
-      text-align: center;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+    .logo {
+      color: #FFD700;
+      font-size: 1.5em;
+      font-weight: 600;
     }
     nav a {
       color: #E5E5E5;
       margin: 0 15px;
-      text-decoration: none;
-      font-weight: 600;
-      transition: color 0.3s;
+      font-weight: 500;
     }
-    nav a:hover {
+    .user-menu {
       color: #FFD700;
     }
-    .section {
+    
+    /* Dashboard Principal */
+    .dashboard {
       max-width: 1200px;
       margin: 50px auto;
       padding: 20px;
-      text-align: center;
+      display: grid;
+      grid-template-columns: 1fr 3fr;
+      gap: 20px;
     }
-    .content-box {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 30px;
-      padding: 20px;
-    }
-    .card {
+    .sidebar, .main-content {
       background-color: #2C2C2C;
       border-radius: 8px;
       padding: 20px;
-      width: 300px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-      transition: transform 0.3s ease;
     }
-    .card:hover {
-      transform: scale(1.05);
+    
+    /* Sidebar */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px 20px;
+    }
+    .sidebar h3 {
+      color: #FFD700;
+      font-size: 1.2em;
+      margin-bottom: 20px;
+    }
+    .balance-card {
+      background: #1E1E1E;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+    .balance-card h4 {
+      color: #FFD700;
+    }
+    .balance-card p {
+      font-size: 1.5em;
+      font-weight: bold;
+    }
+    
+    /* Main Content */
+    .main-content h2 {
+      color: #FFD700;
+      margin-bottom: 20px;
+    }
+    .trading-chart {
+      background: #1E1E1E;
+      border-radius: 8px;
+      padding: 20px;
+      height: 400px;
+    }
+    
+    /* Tabla de Actividad Reciente */
+    .activity-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    .activity-table th, .activity-table td {
+      padding: 10px;
+      border: 1px solid #444;
+      text-align: center;
+    }
+    .activity-table th {
+      background: #333;
+    }
+    
+    /* Noticias */
+    .news-feed {
+      background-color: #2C2C2C;
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+    .news-feed h3 {
+      color: #FFD700;
+    }
+    
+    /* Footer */
+    footer {
+      background: #252525;
+      padding: 20px;
+      text-align: center;
+      margin-top: 30px;
     }
     footer p {
       font-size: 0.9em;
@@ -90,59 +143,82 @@
 </head>
 <body>
 
-  <!-- Header -->
+  <!-- Encabezado -->
   <header>
-    <h1>SimulTrader</h1>
+    <div class="logo">SimulTrader</div>
     <nav>
-      <a href="#about">Sobre Nosotros</a>
-      <a href="#features">Características</a>
-      <a href="#services">Servicios</a>
+      <a href="#dashboard">Dashboard</a>
+      <a href="#news">Noticias</a>
+      <a href="#activity">Actividad</a>
       <a href="#contact">Contacto</a>
     </nav>
+    <div class="user-menu"><i class="fas fa-user-circle"></i></div>
   </header>
 
-  <!-- Sección: Sobre Nosotros -->
-  <section id="about" class="section fade-in">
-    <h2>Sobre Nosotros</h2>
-    <p>SimulTrader es una plataforma de simulación de trading que permite a los usuarios aprender y practicar sus estrategias de inversión en un ambiente sin riesgos.</p>
-  </section>
+  <!-- Dashboard -->
+  <section id="dashboard" class="dashboard">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <h3>Balance de Cuenta</h3>
+      <div class="balance-card">
+        <h4>Saldo Actual</h4>
+        <p>$10,000</p>
+      </div>
+      <div class="balance-card">
+        <h4>Ganancias Diarias</h4>
+        <p>+$250</p>
+      </div>
+    </aside>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+      <h2>Gráfico de Trading en Tiempo Real</h2>
+      <div class="trading-chart">
+        <!-- Aquí iría el iframe de TradingView para mostrar gráficos en tiempo real -->
+        <iframe src="https://es.tradingview.com/chart/" style="width:100%; height:100%;" frameborder="0"></iframe>
+      </div>
 
-  <!-- Sección: Características -->
-  <section id="features" class="section fade-in">
-    <h2>Características</h2>
-    <div class="content-box">
-      <div class="card hover-effect">
-        <h3>Gráficos en Tiempo Real</h3>
-        <p>Utilizamos gráficos de TradingView para ofrecer datos actualizados y análisis técnico en tiempo real.</p>
-      </div>
-      <div class="card hover-effect">
-        <h3>Simulación de Trading</h3>
-        <p>Prueba tus estrategias de trading en un entorno seguro y aprende sin correr riesgos financieros.</p>
-      </div>
-      <div class="card hover-effect">
-        <h3>Estadísticas Detalladas</h3>
-        <p>Obtén un análisis detallado de tu rendimiento para mejorar tus habilidades de inversión.</p>
-      </div>
+      <!-- Tabla de Actividad Reciente -->
+      <h2>Actividad Reciente</h2>
+      <table class="activity-table">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Activo</th>
+            <th>Entrada</th>
+            <th>Salida</th>
+            <th>Ganancia/Pérdida</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>2024-10-28</td>
+            <td>EUR/USD</td>
+            <td>1.1050</td>
+            <td>1.1150</td>
+            <td>+$100</td>
+          </tr>
+          <tr>
+            <td>2024-10-27</td>
+            <td>BTC/USD</td>
+            <td>60,000</td>
+            <td>62,500</td>
+            <td>+$500</td>
+          </tr>
+          <!-- Más filas aquí -->
+        </tbody>
+      </table>
     </div>
   </section>
 
-  <!-- Sección: Servicios -->
-  <section id="services" class="section fade-in">
-    <h2>Servicios</h2>
-    <div class="content-box">
-      <div class="card hover-effect">
-        <h3>Clases de Trading</h3>
-        <p>Aprende los principios básicos y avanzados del trading con nuestras clases personalizadas.</p>
-      </div>
-      <div class="card hover-effect">
-        <h3>Asesoría Financiera</h3>
-        <p>Nuestros expertos están aquí para ayudarte a crear estrategias de inversión sólidas.</p>
-      </div>
-      <div class="card hover-effect">
-        <h3>Simulador de Mercado</h3>
-        <p>Utiliza nuestro simulador de mercado para practicar tus habilidades sin perder dinero.</p>
-      </div>
-    </div>
+  <!-- Sección de Noticias -->
+  <section id="news" class="news-feed">
+    <h3>Últimas Noticias del Mercado</h3>
+    <ul>
+      <li>Bitcoin alcanza un nuevo máximo histórico...</li>
+      <li>El mercado de acciones cierra en rojo...</li>
+      <!-- Más noticias -->
+    </ul>
   </section>
 
   <!-- Footer -->
@@ -150,20 +226,9 @@
     <p>&copy; 2024 SimulTrader. Todos los derechos reservados.</p>
   </footer>
 
-  <script>
-    // Función para activar animaciones al hacer scroll
-    window.addEventListener('scroll', () => {
-      document.querySelectorAll('.fade-in').forEach(el => {
-        const rect = el.getBoundingClientRect();
-        if (rect.top < window.innerHeight - 100) {
-          el.classList.add('active');
-        }
-      });
-    });
-  </script>
-
 </body>
 </html>
+
 
 
 
