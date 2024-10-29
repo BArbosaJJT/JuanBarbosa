@@ -1,1 +1,75 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f6f8;
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    font-size: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav a {
+    color: white;
+    text-decoration: none;
+    padding: 8px 16px;
+    background-color: #0056b3;
+    border-radius: 4px;
+}
+
+.nav a:hover {
+    background-color: #004494;
+}
+
+.container {
+    max-width: 1200px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.modal, .lesson-card, .trade-card {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 10px 0;
+}
+
+input, button {
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+button {
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.page {
+    display: none;
+}
+
+.active {
+    display: block;
+}
+
+#tradingview-chart {
+    height: 500px;
+    width: 100%;
+    margin-top: 20px;
+}
 
