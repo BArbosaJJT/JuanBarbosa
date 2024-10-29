@@ -7,83 +7,37 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
-    <div class="header">
-        <img src="logo.png" alt="Logo" style="height: 50px; vertical-align: middle;">
-        Simulador de Trading
-        <div class="nav">
-            <a href="#inicio" onclick="mostrarPagina('inicio')">Inicio</a>
-            <a href="#clases" onclick="mostrarPagina('clases')">Clases de Trading</a>
-            <a href="#trading" onclick="mostrarPagina('trading')">Trading</a>
+    <!-- Cabecera Invisible -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">Simulador de Trading</div>
+            <nav>
+                <a href="#">Inicio</a>
+                <a href="#">Mercados</a>
+                <a href="#">Educación</a>
+                <a href="#">Contacto</a>
+                <button class="start-button">Empiece</button>
+            </nav>
         </div>
-    </div>
-    
-    <!-- Página de Inicio -->
-    <div class="container page active" id="inicio">
-        <div class="balance" id="balance">Saldo: $0</div>
+    </header>
 
-        <!-- Modal de recarga de saldo -->
-        <div class="modal-overlay" id="modalOverlay">
-            <div class="modal" id="modalRecarga">
-                <h2>Recarga tu Saldo Inicial</h2>
-                <input type="number" id="inputSaldo" placeholder="Ingresa saldo inicial" min="100" step="100">
-                <button onclick="recargarSaldo()">Recargar</button>
+    <!-- Banner Principal -->
+    <section class="banner">
+        <div class="banner-content">
+            <h2>Look first / Then leap.</h2>
+            <p>Las mejores negociaciones requieren investigación, y después compromiso.</p>
+            <div class="search-bar">
+                <input type="text" placeholder="Busque los mercados aquí">
+            </div>
+            <div class="market-tickers">
+                <div class="ticker">BTCUSD <span>0,00%</span></div>
+                <div class="ticker">SPX <span>+0,27%</span></div>
+                <div class="ticker">IBEX35 <span>+0,77%</span></div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <!-- Página de Clases de Trading -->
-    <div class="container page" id="clases">
-        <h2>Clases de Trading</h2>
-        <div id="clases">
-            <div class="lesson-card">
-                <h3>Clase 1: Introducción al Trading</h3>
-                <p>Aprende los conceptos básicos, terminología y el mercado de acciones.</p>
-                <button onclick="iniciarClase('Clase 1')">Iniciar Clase</button>
-            </div>
-            <div class="lesson-card">
-                <h3>Clase 2: Análisis Técnico Básico</h3>
-                <p>Entiende cómo leer gráficos de velas y patrones de precios.</p>
-                <button onclick="iniciarClase('Clase 2')">Iniciar Clase</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Página de Trading -->
-    <div class="container page" id="trading">
-        <div class="trading-section">
-            <h2>Comprar/Vender Acciones</h2>
-            <div class="trade-card">
-                <h3>Acción: <span id="accionActual">Apple (AAPL)</span></h3>
-                <p>Precio actual: <span id="currentPrice">Cargando...</span></p>
-                <input type="number" id="cantidad" placeholder="Cantidad" min="1">
-                <button onclick="comprarAcciones()">Comprar</button>
-                <button onclick="venderAcciones()">Vender</button>
-                <button onclick="obtenerPrecioAccion(simboloAccion)">Actualizar Precio</button>
-            </div>
-            <h3>Acciones Compradas:</h3>
-            <div id="accionesCompradas"></div>
-        </div>
-
-        <!-- Selector de acción -->
-        <div>
-            <h2>Cambiar Acción</h2>
-            <select id="accionSelect">
-                <option value="AAPL">Apple (AAPL)</option>
-                <option value="GOOGL">Alphabet (GOOGL)</option>
-                <option value="MSFT">Microsoft (MSFT)</option>
-                <option value="AMZN">Amazon (AMZN)</option>
-                <!-- Agrega más acciones según sea necesario -->
-            </select>
-            <button onclick="cambiarAccion()">Cambiar Acción</button>
-        </div>
-
-        <!-- Sección de gráficos -->
-        <div id="tradingview-chart" style="height: 500px; width: 100%; margin-bottom: 20px;"></div>
-    </div>
-
-    <!-- Script para TradingView -->
-    <script src="main.js"></script>
-
+    <script src="script.js"></script>
 </body>
 </html>
+
