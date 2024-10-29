@@ -58,18 +58,6 @@
             cursor: pointer;
             margin-top: 10px;
         }
-        /* Animaciones */
-        .lesson-card:hover, .trade-card:hover {
-            transform: scale(1.05);
-            transition: transform 0.3s;
-        }
-        .progress-bar {
-            height: 20px;
-            width: 0;
-            background-color: #4caf50;
-            border-radius: 10px;
-            transition: width 0.5s;
-        }
         .trading-section {
             margin-top: 20px;
         }
@@ -114,7 +102,6 @@
             <p>Entiende cómo leer gráficos de velas y patrones de precios.</p>
             <button onclick="iniciarClase('Clase 2')">Iniciar Clase</button>
         </div>
-        <!-- Agregar más clases según sea necesario -->
     </div>
 
     <!-- Sección de Trading -->
@@ -130,15 +117,6 @@
         <h3>Acciones Compradas:</h3>
         <div id="accionesCompradas"></div>
     </div>
-
-    <!-- Sección de Exámenes -->
-    <div id="examen" style="display:none;">
-        <h2>Examen de la Clase</h2>
-        <p>Pregunta: ¿Qué representa una vela verde en un gráfico de velas?</p>
-        <input type="text" id="respuesta" placeholder="Escribe tu respuesta">
-        <button onclick="verificarRespuesta()">Enviar Respuesta</button>
-        <div class="progress-bar" id="progressBar"></div>
-    </div>
 </div>
 
 <!-- Script para TradingView -->
@@ -146,8 +124,8 @@
 <script>
     let saldo = 0;
     let acciones = 0;
-    let precioAccion = 150; // Simulamos el precio de la acción inicial
-    let simboloAccion = "NASDAQ:AAPL"; // Acción inicial
+    let simboloAccion = "AAPL"; // Acción inicial
+    const API_KEY = 'TU_CLAVE_DE_API'; // Reemplaza con tu clave de API de Alpha Vantage
 
     // Función para manejar la recarga de saldo
     function recargarSaldo() {
@@ -173,9 +151,8 @@
             document.getElementById("modalRecarga").style.display = "flex";
         }
 
-        // Mostrar el precio actual de la acción
-        document.getElementById("currentPrice").innerText = `$${precioAccion}`;
         cargarGrafico(simboloAccion);
+        obtenerPrecioAccion(simboloAccion); // Obtener el precio de la acción al cargar
     };
 
     // Función para cargar el gráfico de TradingView
@@ -184,7 +161,7 @@
             "container_id": "tradingview-chart",
             "width": "100%",
             "height": "500",
-            "symbol": simbolo,
+            "symbol": `NASDAQ:${simbolo}`,
             "interval": "D",
             "timezone": "Etc/UTC",
             "theme": "light",
@@ -201,46 +178,44 @@
         });
     }
 
+    // Función para obtener el precio de la acción desde la API
+    async function obtenerPrecioAccion(simbolo) {
+        const url = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${simbolo}&interval=5min&apikey=${V4ZQ8PO6D4Y6NM1Y}`;
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            if (data["Time Series (5min)"]) {
+                const latestTime = Object.keys(data["Time Series (5min)"])[0];
+                const latestPrice = data["Time Series (5min)"][latestTime]["1. open"];
+                document.getElementById("currentPrice").innerText = `$${parseFloat(latestPrice).toFixed(2)}`;
+            } else {
+                console.error("Error al obtener datos de la API: ", data);
+                alert("No se pudo obtener el precio de la acción.");
+            }
+        } catch (error) {
+            console.error("Error en la solicitud: ", error);
+            alert("Error en la solicitud a la API.");
+        }
+    }
+
     // Función para cambiar la acción
     function cambiarAccion() {
         const nuevaAccion = document.getElementById("accionInput").value.toUpperCase();
-        if (nuevaAccion) {
-            simboloAccion = `NASDAQ:${nuevaAccion}`;
-            document.getElementById("accionActual").innerText = nuevaAccion;
-            document.getElementById("currentPrice").innerText = `$${precioAccion}`; // Aquí podrías actualizar el precio real
-            cargarGrafico(simboloAccion);
-            alert(`Has cambiado la acción a ${nuevaAccion}.`);
-        } else {
-            alert("Por favor, ingresa un símbolo de acción válido.");
-        }
-    }
-
-    // Función para iniciar una clase
-    function iniciarClase(clase) {
-        alert("Iniciando " + clase);
-        document.getElementById("examen").style.display = "block";
-    }
-
-    // Función para verificar la respuesta del examen
-    function verificarRespuesta() {
-        const respuesta = document.getElementById("respuesta").value.toLowerCase();
-        if (respuesta === "aumento del precio") {
-            alert("¡Correcto!");
-            document.getElementById("examen").style.display = "none";
-            document.getElementById("progressBar").style.width = "100%";
-        } else {
-            alert("Incorrecto, intenta de nuevo.");
-        }
+        simboloAccion = nuevaAccion;
+        document.getElementById("accionActual").innerText = nuevaAccion;
+        cargarGrafico(simboloAccion);
+        obtenerPrecioAccion(simboloAccion); // Obtener el nuevo precio de la acción
     }
 
     // Funciones para comprar y vender acciones
     function comprarAcciones() {
         const cantidad = parseInt(document.getElementById("cantidad").value);
+        const precioAccion = parseFloat(document.getElementById("currentPrice").innerText.replace('$', ''));
         if (cantidad > 0 && saldo >= (precioAccion * cantidad)) {
             saldo -= (precioAccion * cantidad);
             acciones += cantidad;
             actualizarEstado();
-            alert(`Has comprado ${cantidad} acciones.`);
+            alert(`Has comprado ${cantidad} acciones de ${simboloAccion}.`);
         } else {
             alert("Fondos insuficientes o cantidad no válida.");
         }
@@ -248,11 +223,12 @@
 
     function venderAcciones() {
         const cantidad = parseInt(document.getElementById("cantidad").value);
+        const precioAccion = parseFloat(document.getElementById("currentPrice").innerText.replace('$', ''));
         if (cantidad > 0 && acciones >= cantidad) {
             saldo += (precioAccion * cantidad);
             acciones -= cantidad;
             actualizarEstado();
-            alert(`Has vendido ${cantidad} acciones.`);
+            alert(`Has vendido ${cantidad} acciones de ${simboloAccion}.`);
         } else {
             alert("No tienes suficientes acciones o cantidad no válida.");
         }
@@ -267,5 +243,3 @@
 
 </body>
 </html>
-
-
