@@ -5,17 +5,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simulador de Trading</title>
     <link rel="stylesheet" href="styles.css">
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Trading</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- Cabecera Invisible -->
     <header class="header">
-        <img src="logo.png" alt="Logo" class="logo">
-        <h1>Simulador de Trading</h1>
-        <nav class="nav">
-            <a href="#inicio" onclick="mostrarPagina('inicio')">Inicio</a>
-            <a href="#clases" onclick="mostrarPagina('clases')">Clases de Trading</a>
-            <a href="#trading" onclick="mostrarPagina('trading')">Trading</a>
-        </nav>
+        <div class="header-content">
+            <div class="logo">Simulador de Trading</div>
+            <nav>
+                <a href="#">Inicio</a>
+                <a href="#">Mercados</a>
+                <a href="#">Educación</a>
+                <a href="#">Contacto</a>
+                <button class="start-button">Empiece</button>
+            </nav>
+        </div>
     </header>
+
+    <!-- Banner Principal -->
+    <section class="banner">
+        <div class="banner-content">
+            <h2>Look first / Then leap.</h2>
+            <p>Las mejores negociaciones requieren investigación, y después compromiso.</p>
+            <div class="search-bar">
+                <input type="text" placeholder="Busque los mercados aquí">
+            </div>
+            <div class="market-tickers">
+                <div class="ticker">BTCUSD <span>0,00%</span></div>
+                <div class="ticker">SPX <span>+0,27%</span></div>
+                <div class="ticker">IBEX35 <span>+0,77%</span></div>
+            </div>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
 
     <div class="container page active" id="inicio">
         <h2>Inicio</h2>
