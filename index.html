@@ -23,6 +23,20 @@
             text-align: center;
             font-size: 24px;
         }
+        .nav {
+            margin-top: 10px;
+        }
+        .nav a {
+            margin: 0 10px;
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            background-color: #0056b3;
+            border-radius: 4px;
+        }
+        .nav a:hover {
+            background-color: #004494;
+        }
         .container {
             max-width: 1200px;
             width: 100%;
@@ -43,13 +57,13 @@
             width: 300px;
             text-align: center;
         }
-        .modal input, .lesson-card, .exam, .trade-card {
+        .modal input, .lesson-card, .trade-card {
             padding: 10px;
             margin-top: 10px;
             border: 1px solid #ddd;
             border-radius: 4px;
         }
-        .modal button, .lesson-card button, .start-exam-button, .trade-card button {
+        .modal button, .lesson-card button, .trade-card button {
             padding: 10px;
             background-color: #007bff;
             color: white;
@@ -61,15 +75,27 @@
         .trading-section {
             margin-top: 20px;
         }
+        .page {
+            display: none; /* Ocultar todas las páginas por defecto */
+        }
+        .active {
+            display: block; /* Mostrar la página activa */
+        }
     </style>
 </head>
 <body>
 
 <div class="header">
     Simulador de Trading
+    <div class="nav">
+        <a href="#inicio" onclick="mostrarPagina('inicio')">Inicio</a>
+        <a href="#clases" onclick="mostrarPagina('clases')">Clases de Trading</a>
+        <a href="#trading" onclick="mostrarPagina('trading')">Trading</a>
+    </div>
 </div>
 
-<div class="container">
+<!-- Página de Inicio -->
+<div class="container page active" id="inicio">
     <div class="balance" id="balance">Saldo: $0</div>
 
     <!-- Modal de recarga de saldo -->
@@ -78,9 +104,40 @@
         <input type="number" id="inputSaldo" placeholder="Ingresa saldo inicial" min="100" step="100">
         <button onclick="recargarSaldo()">Recargar</button>
     </div>
+</div>
 
-    <!-- Sección de gráficos -->
-    <div id="tradingview-chart" style="height: 500px; width: 100%; margin-bottom: 20px;"></div>
+<!-- Página de Clases de Trading -->
+<div class="container page" id="clases">
+    <h2>Clases de Trading</h2>
+    <div id="clases">
+        <div class="lesson-card">
+            <h3>Clase 1: Introducción al Trading</h3>
+            <p>Aprende los conceptos básicos, terminología y el mercado de acciones.</p>
+            <button onclick="iniciarClase('Clase 1')">Iniciar Clase</button>
+        </div>
+        <div class="lesson-card">
+            <h3>Clase 2: Análisis Técnico Básico</h3>
+            <p>Entiende cómo leer gráficos de velas y patrones de precios.</p>
+            <button onclick="iniciarClase('Clase 2')">Iniciar Clase</button>
+        </div>
+    </div>
+</div>
+
+<!-- Página de Trading -->
+<div class="container page" id="trading">
+    <div class="trading-section">
+        <h2>Comprar/Vender Acciones</h2>
+        <div class="trade-card">
+            <h3>Acción: <span id="accionActual">Apple (AAPL)</span></h3>
+            <p>Precio actual: <span id="currentPrice">Cargando...</span></p>
+            <input type="number" id="cantidad" placeholder="Cantidad" min="1">
+            <button onclick="comprarAcciones()">Comprar</button>
+            <button onclick="venderAcciones()">Vender</button>
+            <button onclick="obtenerPrecioAccion(simboloAccion)">Actualizar Precio</button>
+        </div>
+        <h3>Acciones Compradas:</h3>
+        <div id="accionesCompradas"></div>
+    </div>
 
     <!-- Selector de acción -->
     <div>
@@ -95,35 +152,8 @@
         <button onclick="cambiarAccion()">Cambiar Acción</button>
     </div>
 
-    <!-- Sección de Clases de Trading -->
-    <h2>Clases de Trading</h2>
-    <div id="clases">
-        <div class="lesson-card">
-            <h3>Clase 1: Introducción al Trading</h3>
-            <p>Aprende los conceptos básicos, terminología y el mercado de acciones.</p>
-            <button onclick="iniciarClase('Clase 1')">Iniciar Clase</button>
-        </div>
-        <div class="lesson-card">
-            <h3>Clase 2: Análisis Técnico Básico</h3>
-            <p>Entiende cómo leer gráficos de velas y patrones de precios.</p>
-            <button onclick="iniciarClase('Clase 2')">Iniciar Clase</button>
-        </div>
-    </div>
-
-    <!-- Sección de Trading -->
-    <div class="trading-section">
-        <h2>Comprar/Vender Acciones</h2>
-        <div class="trade-card">
-            <h3>Acción: <span id="accionActual">Apple (AAPL)</span></h3>
-            <p>Precio actual: <span id="currentPrice">Cargando...</span></p>
-            <input type="number" id="cantidad" placeholder="Cantidad" min="1">
-            <button onclick="comprarAcciones()">Comprar</button>
-            <button onclick="venderAcciones()">Vender</button>
-            <button onclick="obtenerPrecioAccion(simboloAccion)">Actualizar Precio</button> <!-- Botón de actualizar precio -->
-        </div>
-        <h3>Acciones Compradas:</h3>
-        <div id="accionesCompradas"></div>
-    </div>
+    <!-- Sección de gráficos -->
+    <div id="tradingview-chart" style="height: 500px; width: 100%; margin-bottom: 20px;"></div>
 </div>
 
 <!-- Script para TradingView -->
@@ -133,6 +163,13 @@
     let acciones = 0;
     let simboloAccion = "AAPL"; // Acción inicial
     const API_KEY = "V4ZQ8PO6D4Y6NM1Y"; // Reemplaza con tu clave de API de Alpha Vantage
+
+    // Función para mostrar la página seleccionada
+    function mostrarPagina(pagina) {
+        const paginas = document.querySelectorAll('.page');
+        paginas.forEach(p => p.classList.remove('active'));
+        document.getElementById(pagina).classList.add('active');
+    }
 
     // Función para manejar la recarga de saldo
     function recargarSaldo() {
@@ -191,54 +228,65 @@
         try {
             const response = await fetch(url);
             const data = await response.json();
-            if (data["Time Series (5min)"]) {
-                const latestTime = Object.keys(data["Time Series (5min)"])[0];
-                const latestPrice = data["Time Series (5min)"][latestTime]["1. open"];
-                document.getElementById("currentPrice").innerText = `$${parseFloat(latestPrice).toFixed(2)}`;
-            } else {
-                console.error("Error al obtener datos de la API: ", data);
-                alert("No se pudo obtener el precio de la acción.");
-            }
+            const timeSeries = data['Time Series (5min)'];
+            const latestTime = Object.keys(timeSeries)[0];
+            const latestPrice = timeSeries[latestTime]['1. open'];
+            document.getElementById('currentPrice').innerText = "$" + parseFloat(latestPrice).toFixed(2);
         } catch (error) {
-            console.error("Error en la solicitud: ", error);
-            alert("Error en la solicitud a la API.");
+            console.error("Error al obtener el precio de la acción:", error);
         }
     }
 
-    // Función para cambiar la acción
+    // Función para cambiar la acción seleccionada
     function cambiarAccion() {
-        const nuevaAccion = document.getElementById("accionSelect").value;
-        simboloAccion = nuevaAccion;
-        document.getElementById("accionActual").innerText = nuevaAccion;
+        const select = document.getElementById('accionSelect');
+        simboloAccion = select.value;
         cargarGrafico(simboloAccion);
-        obtenerPrecioAccion(simboloAccion); // Obtener el nuevo precio de la acción
+        obtenerPrecioAccion(simboloAccion);
     }
 
-    // Funciones para comprar y vender acciones
+    // Función para comprar acciones
     function comprarAcciones() {
         const cantidad = parseInt(document.getElementById("cantidad").value);
-        const precioAccion = parseFloat(document.getElementById("currentPrice").innerText.replace('$', ''));
-        if (cantidad > 0 && saldo >= (precioAccion * cantidad)) {
+        const precio = parseFloat(document.getElementById("currentPrice").innerText.replace('$', ''));
+        const totalCompra = cantidad * precio;
+        if (cantidad > 0 && totalCompra <= saldo) {
+            saldo -= totalCompra;
             acciones += cantidad;
-            saldo -= precioAccion * cantidad;
-            document.getElementById("accionesCompradas").innerText += `Compraste ${cantidad} acciones de ${simboloAccion} a $${precioAccion} cada una.\n`;
-            document.getElementById("balance").innerText = "Saldo: $" + saldo.toFixed(2);
+            localStorage.setItem("saldo", saldo);
+            document.getElementById("balance").innerText = "Saldo: $" + saldo;
+            mostrarAcciones();
         } else {
-            alert("Saldo insuficiente o cantidad inválida.");
+            alert("Saldo insuficiente o cantidad no válida.");
         }
     }
 
+    // Función para vender acciones
     function venderAcciones() {
         const cantidad = parseInt(document.getElementById("cantidad").value);
-        const precioAccion = parseFloat(document.getElementById("currentPrice").innerText.replace('$', ''));
-        if (cantidad > 0 && acciones >= cantidad) {
+        const precio = parseFloat(document.getElementById("currentPrice").innerText.replace('$', ''));
+        if (cantidad > 0 && cantidad <= acciones) {
+            const totalVenta = cantidad * precio;
+            saldo += totalVenta;
             acciones -= cantidad;
-            saldo += precioAccion * cantidad;
-            document.getElementById("accionesCompradas").innerText += `Vendiste ${cantidad} acciones de ${simboloAccion} a $${precioAccion} cada una.\n`;
-            document.getElementById("balance").innerText = "Saldo: $" + saldo.toFixed(2);
+            localStorage.setItem("saldo", saldo);
+            document.getElementById("balance").innerText = "Saldo: $" + saldo;
+            mostrarAcciones();
         } else {
-            alert("No tienes suficientes acciones o cantidad inválida.");
+            alert("Cantidad no válida.");
         }
+    }
+
+    // Función para mostrar acciones compradas
+    function mostrarAcciones() {
+        const accionesCompradasDiv = document.getElementById("accionesCompradas");
+        accionesCompradasDiv.innerHTML = `Has comprado ${acciones} acciones de ${simboloAccion}`;
+    }
+
+    // Función para iniciar clase
+    function iniciarClase(clase) {
+        alert("Iniciando " + clase);
+        // Lógica para la clase
     }
 </script>
 
