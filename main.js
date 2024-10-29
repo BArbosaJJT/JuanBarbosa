@@ -26,80 +26,53 @@ window.onload = async function() {
         saldo = saldoGuardado;
         document.getElementById("balance").innerText = "Saldo: $" + saldo;
         document.getElementById("modalRecarga").style.display = "none";
-    } else {
-        document.getElementById("modalRecarga").style.display = "flex";
     }
-
-    cargarGrafico(simboloAccion);
     await obtenerPrecioAccion(simboloAccion);
 };
 
-function cargarGrafico(simbolo) {
-    new TradingView.widget({
-        "container_id": "tradingview-chart",
-        "width": "100%",
-        "height": "500",
-        "symbol": `NASDAQ:${simbolo}`,
-        "interval": "D",
-        "timezone": "Etc/UTC",
-        "theme": "light",
-        "style": "1",
-        "locale": "es",
-        "toolbar_bg": "#f1f3f6",
-        "enable_publishing": false,
-        "allow_symbol_change": true,
-        "studies": ["RSI@tv-basicstudies"]
-    });
-}
-
 async function obtenerPrecioAccion(simbolo) {
-    const url = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${simbolo}&interval=5min&apikey=${API_KEY}`;
-    try {
-        const response = await fetch(url);
-        const data = await response.json();
-        const timeSeries = data['Time Series (5min)'];
-        const latestTime = Object.keys(timeSeries)[0];
-        const latestPrice = timeSeries[latestTime]['1. open'];
-        document.getElementById('currentPrice').innerText = "$" + parseFloat(latestPrice).toFixed(2);
-    } catch (error) {
-        console.error("Error al obtener el precio de la acción:", error);
-    }
+    const response = await fetch(`https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${simbolo}&interval=5min&apikey=${API_KEY}`);
+    const data = await response.json();
+    const latestTime = Object.keys(data["Time Series (5min)"])[0];
+    const latestPrice = data["Time Series (5min)"][latestTime]["1. open"];
+    document.getElementById("currentPrice").innerText = `$${parseFloat(latestPrice).toFixed(2)}`;
 }
 
 function cambiarAccion() {
-    const select = document.getElementById('accionSelect');
+    const select = document.getElementById("accionSelect");
     simboloAccion = select.value;
-    cargarGrafico(simboloAccion);
     obtenerPrecioAccion(simboloAccion);
 }
 
 function comprarAcciones() {
     const cantidad = parseInt(document.getElementById("cantidad").value);
     const precio = parseFloat(document.getElementById("currentPrice").innerText.replace('$', ''));
-    const totalCompra = cantidad * precio;
-    if (cantidad > 0 && totalCompra <= saldo) {
-        saldo -= totalCompra;
+    if (cantidad > 0 && saldo >= cantidad * precio) {
         acciones += cantidad;
+        saldo -= cantidad * precio;
         localStorage.setItem("saldo", saldo);
         document.getElementById("balance").innerText = "Saldo: $" + saldo;
-        mostrarAcciones();
+        document.getElementById("accionesCompradas").innerText = `Acciones compradas: ${acciones}`;
     } else {
-        alert("Saldo insuficiente o cantidad no válida.");
+        alert("Fondos insuficientes o cantidad no válida.");
     }
 }
 
 function venderAcciones() {
     const cantidad = parseInt(document.getElementById("cantidad").value);
-    const precio = parseFloat(document.getElementById("currentPrice").innerText.replace('$', ''));
     if (cantidad > 0 && cantidad <= acciones) {
-        const totalVenta = cantidad * precio;
-        saldo += totalVenta;
+        const precio = parseFloat(document.getElementById("currentPrice").innerText.replace('$', ''));
         acciones -= cantidad;
-        localStorage.set
-        // Agregar efecto de cambio de color en la cabecera al hacer scroll
-window.addEventListener("scroll", function () {
-    const header = document.querySelector(".header");
-    header.classList.toggle("scrolled", window.scrollY > 50);
-});
+        saldo += cantidad * precio;
+        localStorage.setItem("saldo", saldo);
+        document.getElementById("balance").innerText = "Saldo: $" + saldo;
+        document.getElementById("accionesCompradas").innerText = `Acciones compradas: ${acciones}`;
+    } else {
+        alert("Cantidad no válida o no posees suficientes acciones.");
+    }
+}
 
+function iniciarClase(clase) {
+    alert(`Iniciando ${clase}`);
+}
 
