@@ -4,8 +4,181 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simulador de Trading</title>
-    <link rel="stylesheet" href="styles.css">
-    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #1b1b1b; /* Fondo oscuro */
+            color: #fff; /* Texto blanco */
+        }
+
+        .header {
+            background-color: #000; /* Cabecera negra */
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            transition: background 0.3s ease;
+            z-index: 1000; /* Asegura que la cabecera esté siempre en la parte superior */
+        }
+
+        .header.scrolled {
+            background: rgba(0, 0, 0, 0.9);
+        }
+
+        .header .logo {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .header nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        .header a,
+        .header .start-button {
+            color: #fff;
+            text-decoration: none;
+            padding: 8px 15px;
+            transition: background 0.3s, color 0.3s;
+            border-radius: 4px;
+        }
+
+        .start-button {
+            background: #6200ee;
+            border: none;
+            cursor: pointer;
+        }
+
+        .header a:hover,
+        .start-button:hover {
+            color: #6200ee;
+            background: #fff;
+        }
+
+        .banner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: url('tu-imagen-banner.jpg') no-repeat center center/cover;
+            position: relative;
+            text-align: center;
+            color: #fff;
+            opacity: 0.9; /* Opacidad para el fondo */
+        }
+
+        .banner-content {
+            max-width: 700px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.7); /* Fondo semitransparente para mejor legibilidad */
+            border-radius: 8px;
+        }
+
+        .banner-content h2 {
+            font-size: 4em;
+            margin-bottom: 10px;
+        }
+
+        .banner-content p {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
+        .search-bar {
+            position: relative;
+            display: inline-block;
+            width: 80%;
+            margin-bottom: 20px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.2em;
+            background: #333; /* Fondo oscuro para el input */
+            color: #fff; /* Texto blanco en el input */
+        }
+
+        .search-bar input::placeholder {
+            color: #bbb; /* Color del placeholder */
+        }
+
+        .market-tickers {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .ticker {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1); /* Fondo semitransparente */
+            border-radius: 20px;
+            font-size: 1.2em;
+        }
+
+        .container {
+            max-width: 1200px;
+            padding: 20px;
+            margin-top: 100px; /* Espacio para la cabecera fija */
+        }
+
+        .modal, .lesson-card, .trade-card {
+            background-color: #2c2c2c; /* Fondo gris oscuro */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            margin: 10px 0;
+        }
+
+        input, button {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #444; /* Borde gris oscuro */
+            background-color: #333; /* Fondo oscuro */
+            color: white; /* Texto blanco */
+        }
+
+        button {
+            background-color: #6200ee; /* Botón color */
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3; /* Color de fondo al pasar el ratón */
+        }
+
+        .page {
+            display: none;
+        }
+
+        .active {
+            display: block;
+        }
+
+        #tradingview-chart {
+            height: 500px;
+            width: 100%;
+            margin-top: 20px;
+            border: 1px solid #444; /* Borde gris oscuro */
+            border-radius: 8px;
+        }
+    </style>
 </head>
 <body>
     <!-- Cabecera -->
@@ -85,6 +258,129 @@
         <div id="tradingview-chart"></div>
     </div>
 
-    <script src="script.js"></script>
+    <script src="https://s3.tradingview.com/tv.js"></script>
+    <script>
+        let saldo = 0;
+        let accionesCompradas = {};
+        let simboloAccion = 'AAPL'; // Acción por defecto
+
+        // Escuchar el evento de scroll para cambiar la cabecera
+        window.onscroll = function () {
+            const header = document.querySelector(".header");
+            if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
+                header.classList.add("scrolled");
+            } else {
+                header.classList.remove("scrolled");
+            }
+        };
+
+        // Función para mostrar la página seleccionada
+        function mostrarPagina(pagina) {
+            const pages = document.querySelectorAll('.page');
+            pages.forEach((page) => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pagina).classList.add('active');
+        }
+
+        // Función para recargar saldo
+        function recargarSaldo() {
+            const inputSaldo = document.getElementById('inputSaldo');
+            saldo += parseFloat(inputSaldo.value);
+            document.getElementById('balance').innerText = `Saldo: $${saldo.toFixed(2)}`;
+            inputSaldo.value = ''; // Limpiar el campo de entrada
+            mostrarPagina('inicio');
+        }
+
+        // Función para iniciar clase
+        function iniciarClase(clase) {
+            alert(`Iniciando ${clase}`);
+        }
+
+        // Función para comprar acciones
+        function comprarAcciones() {
+            const cantidad = parseInt(document.getElementById('cantidad').value);
+            if (isNaN(cantidad) || cantidad <= 0) {
+                alert("Por favor, ingrese una cantidad válida.");
+                return;
+            }
+            const costo = cantidad * parseFloat(document.getElementById('currentPrice').innerText.slice(1));
+            if (costo > saldo) {
+                alert("No tiene suficiente saldo para realizar esta compra.");
+            } else {
+                saldo -= costo;
+                accionesCompradas[simboloAccion] = (accionesCompradas[simboloAccion] || 0) + cantidad;
+                document.getElementById('balance').innerText = `Saldo: $${saldo.toFixed(2)}`;
+                mostrarAccionesCompradas();
+            }
+        }
+
+        // Función para vender acciones
+        function venderAcciones() {
+            const cantidad = parseInt(document.getElementById('cantidad').value);
+            if (isNaN(cantidad) || cantidad <= 0) {
+                alert("Por favor, ingrese una cantidad válida.");
+                return;
+            }
+            if (accionesCompradas[simboloAccion] < cantidad) {
+                alert("No tiene suficientes acciones para vender.");
+            } else {
+                const ingreso = cantidad * parseFloat(document.getElementById('currentPrice').innerText.slice(1));
+                saldo += ingreso;
+                accionesCompradas[simboloAccion] -= cantidad;
+                document.getElementById('balance').innerText = `Saldo: $${saldo.toFixed(2)}`;
+                mostrarAccionesCompradas();
+            }
+        }
+
+        // Función para mostrar acciones compradas
+        function mostrarAccionesCompradas() {
+            const accionesDiv = document.getElementById('accionesCompradas');
+            accionesDiv.innerHTML = '<h3>Acciones Compradas:</h3>';
+            for (const [accion, cantidad] of Object.entries(accionesCompradas)) {
+                accionesDiv.innerHTML += `<p>${accion}: ${cantidad}</p>`;
+            }
+        }
+
+        // Función para obtener precio de la acción
+        async function obtenerPrecioAccion(simbolo) {
+            const response = await fetch(`https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${simbolo}&interval=1min&apikey=V4ZQ8PO6D4Y6NM1Y`);
+            const data = await response.json();
+            const lastKey = Object.keys(data['Time Series (1min)'])[0];
+            const lastData = data['Time Series (1min)'][lastKey];
+            const precio = lastData['1. open'];
+            document.getElementById('currentPrice').innerText = `$${parseFloat(precio).toFixed(2)}`;
+        }
+
+        // Función para cambiar acción
+        function cambiarAccion() {
+            simboloAccion = document.getElementById('accionSelect').value;
+            document.getElementById('accionActual').innerText = simboloAccion;
+            obtenerPrecioAccion(simboloAccion);
+        }
+
+        // Inicializar la gráfica
+        const widget = new TradingView.widget({
+            "container_id": "tradingview-chart",
+            "width": "100%",
+            "height": "500px",
+            "symbol": "NASDAQ:AAPL",
+            "interval": "D",
+            "timezone": "Etc/UTC",
+            "theme": "dark",
+            "style": "1",
+            "locale": "es",
+            "allow_symbol_change": true,
+            "details": true,
+            "studies": [
+                "MACD@tv-basicstudies",
+                "RSI@tv-basicstudies"
+            ],
+            "show_popup_button": true,
+            "popup_width": "1000",
+            "popup_height": "650",
+            "user_legacy": false,
+        });
+    </script>
 </body>
 </html>
