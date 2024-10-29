@@ -123,10 +123,6 @@ body {
     font-size: 1.2em;
 }
 
-.ticker span {
-    font-weight: bold;
-}
-
 .container {
     max-width: 1200px;
     padding: 20px;
@@ -175,3 +171,4 @@ button:hover {
     border: 1px solid #444; /* Borde gris oscuro */
     border-radius: 8px;
 }
+
