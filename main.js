@@ -96,4 +96,10 @@ function venderAcciones() {
         saldo += totalVenta;
         acciones -= cantidad;
         localStorage.set
+        // Agregar efecto de cambio de color en la cabecera al hacer scroll
+window.addEventListener("scroll", function () {
+    const header = document.querySelector(".header");
+    header.classList.toggle("scrolled", window.scrollY > 50);
+});
+
 
