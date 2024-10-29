@@ -119,6 +119,7 @@
             <input type="number" id="cantidad" placeholder="Cantidad" min="1">
             <button onclick="comprarAcciones()">Comprar</button>
             <button onclick="venderAcciones()">Vender</button>
+            <button onclick="obtenerPrecioAccion(simboloAccion)">Actualizar Precio</button> <!-- Botón de actualizar precio -->
         </div>
         <h3>Acciones Compradas:</h3>
         <div id="accionesCompradas"></div>
@@ -217,38 +218,27 @@
     function comprarAcciones() {
         const cantidad = parseInt(document.getElementById("cantidad").value);
         const precioAccion = parseFloat(document.getElementById("currentPrice").innerText.replace('$', ''));
-        if (cantidad > 0 && saldo >= precioAccion * cantidad) {
-            saldo -= precioAccion * cantidad;
+        if (cantidad > 0 && saldo >= (precioAccion * cantidad)) {
             acciones += cantidad;
+            saldo -= precioAccion * cantidad;
+            document.getElementById("accionesCompradas").innerText += `Compraste ${cantidad} acciones de ${simboloAccion} a $${precioAccion} cada una.\n`;
             document.getElementById("balance").innerText = "Saldo: $" + saldo.toFixed(2);
-            actualizarAccionesCompradas();
-            alert(`Has comprado ${cantidad} acciones de ${simboloAccion}`);
         } else {
-            alert("Fondos insuficientes o cantidad no válida.");
+            alert("Saldo insuficiente o cantidad inválida.");
         }
     }
 
     function venderAcciones() {
         const cantidad = parseInt(document.getElementById("cantidad").value);
+        const precioAccion = parseFloat(document.getElementById("currentPrice").innerText.replace('$', ''));
         if (cantidad > 0 && acciones >= cantidad) {
-            const precioAccion = parseFloat(document.getElementById("currentPrice").innerText.replace('$', ''));
-            saldo += precioAccion * cantidad;
             acciones -= cantidad;
+            saldo += precioAccion * cantidad;
+            document.getElementById("accionesCompradas").innerText += `Vendiste ${cantidad} acciones de ${simboloAccion} a $${precioAccion} cada una.\n`;
             document.getElementById("balance").innerText = "Saldo: $" + saldo.toFixed(2);
-            actualizarAccionesCompradas();
-            alert(`Has vendido ${cantidad} acciones de ${simboloAccion}`);
         } else {
-            alert("No tienes suficientes acciones o cantidad no válida.");
+            alert("No tienes suficientes acciones o cantidad inválida.");
         }
-    }
-
-    function actualizarAccionesCompradas() {
-        document.getElementById("accionesCompradas").innerText = `Tienes ${acciones} acciones de ${simboloAccion}`;
-    }
-
-    // Funciones para las clases de trading
-    function iniciarClase(clase) {
-        alert(`Iniciando ${clase}`);
     }
 </script>
 
