@@ -85,7 +85,13 @@
     <!-- Selector de acción -->
     <div>
         <h2>Cambiar Acción</h2>
-        <input type="text" id="accionInput" placeholder="Ejemplo: AAPL" />
+        <select id="accionSelect">
+            <option value="AAPL">Apple (AAPL)</option>
+            <option value="GOOGL">Alphabet (GOOGL)</option>
+            <option value="MSFT">Microsoft (MSFT)</option>
+            <option value="AMZN">Amazon (AMZN)</option>
+            <!-- Agrega más acciones según sea necesario -->
+        </select>
         <button onclick="cambiarAccion()">Cambiar Acción</button>
     </div>
 
@@ -125,7 +131,7 @@
     let saldo = 0;
     let acciones = 0;
     let simboloAccion = "AAPL"; // Acción inicial
-    const API_KEY = V4ZQ8PO6D4Y6NM1Y; // Reemplaza con tu clave de API de Alpha Vantage
+    const API_KEY = "V4ZQ8PO6D4Y6NM1Y"; // Reemplaza con tu clave de API de Alpha Vantage
 
     // Función para manejar la recarga de saldo
     function recargarSaldo() {
@@ -141,7 +147,7 @@
     }
 
     // Mostrar el saldo guardado o mostrar el modal de recarga
-    window.onload = function() {
+    window.onload = async function() {
         const saldoGuardado = parseFloat(localStorage.getItem("saldo"));
         if (saldoGuardado && saldoGuardado > 0) {
             saldo = saldoGuardado;
@@ -152,7 +158,7 @@
         }
 
         cargarGrafico(simboloAccion);
-        obtenerPrecioAccion(simboloAccion); // Obtener el precio de la acción al cargar
+        await obtenerPrecioAccion(simboloAccion); // Obtener el precio de la acción al cargar
     };
 
     // Función para cargar el gráfico de TradingView
@@ -200,7 +206,7 @@
 
     // Función para cambiar la acción
     function cambiarAccion() {
-        const nuevaAccion = document.getElementById("accionInput").value.toUpperCase();
+        const nuevaAccion = document.getElementById("accionSelect").value;
         simboloAccion = nuevaAccion;
         document.getElementById("accionActual").innerText = nuevaAccion;
         cargarGrafico(simboloAccion);
@@ -211,11 +217,12 @@
     function comprarAcciones() {
         const cantidad = parseInt(document.getElementById("cantidad").value);
         const precioAccion = parseFloat(document.getElementById("currentPrice").innerText.replace('$', ''));
-        if (cantidad > 0 && saldo >= (precioAccion * cantidad)) {
-            saldo -= (precioAccion * cantidad);
+        if (cantidad > 0 && saldo >= precioAccion * cantidad) {
+            saldo -= precioAccion * cantidad;
             acciones += cantidad;
-            actualizarEstado();
-            alert(`Has comprado ${cantidad} acciones de ${simboloAccion}.`);
+            document.getElementById("balance").innerText = "Saldo: $" + saldo.toFixed(2);
+            actualizarAccionesCompradas();
+            alert(`Has comprado ${cantidad} acciones de ${simboloAccion}`);
         } else {
             alert("Fondos insuficientes o cantidad no válida.");
         }
@@ -223,21 +230,25 @@
 
     function venderAcciones() {
         const cantidad = parseInt(document.getElementById("cantidad").value);
-        const precioAccion = parseFloat(document.getElementById("currentPrice").innerText.replace('$', ''));
         if (cantidad > 0 && acciones >= cantidad) {
-            saldo += (precioAccion * cantidad);
+            const precioAccion = parseFloat(document.getElementById("currentPrice").innerText.replace('$', ''));
+            saldo += precioAccion * cantidad;
             acciones -= cantidad;
-            actualizarEstado();
-            alert(`Has vendido ${cantidad} acciones de ${simboloAccion}.`);
+            document.getElementById("balance").innerText = "Saldo: $" + saldo.toFixed(2);
+            actualizarAccionesCompradas();
+            alert(`Has vendido ${cantidad} acciones de ${simboloAccion}`);
         } else {
             alert("No tienes suficientes acciones o cantidad no válida.");
         }
     }
 
-    function actualizarEstado() {
-        document.getElementById("balance").innerText = "Saldo: $" + saldo;
-        document.getElementById("accionesCompradas").innerText = `Acciones Compradas: ${acciones}`;
-        document.getElementById("cantidad").value = ""; // Resetear el campo de cantidad
+    function actualizarAccionesCompradas() {
+        document.getElementById("accionesCompradas").innerText = `Tienes ${acciones} acciones de ${simboloAccion}`;
+    }
+
+    // Funciones para las clases de trading
+    function iniciarClase(clase) {
+        alert(`Iniciando ${clase}`);
     }
 </script>
 
