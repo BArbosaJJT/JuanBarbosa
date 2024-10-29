@@ -6,14 +6,14 @@
 }
 
 body {
-    background-color: #f4f6f8;
-    color: #000;
+    background-color: #1b1b1b; /* Fondo oscuro */
+    color: #fff; /* Texto blanco */
 }
 
 .header {
-    background-color: #007bff;
+    background-color: #000; /* Cabecera negra */
     color: white;
-    padding: 10px 20px;
+    padding: 15px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -21,6 +21,7 @@ body {
     top: 0;
     width: 100%;
     transition: background 0.3s ease;
+    z-index: 1000; /* Asegura que la cabecera esté siempre en la parte superior */
 }
 
 .header.scrolled {
@@ -43,12 +44,12 @@ body {
     text-decoration: none;
     padding: 8px 15px;
     transition: background 0.3s, color 0.3s;
+    border-radius: 4px;
 }
 
 .start-button {
     background: #6200ee;
     border: none;
-    border-radius: 4px;
     cursor: pointer;
 }
 
@@ -67,11 +68,14 @@ body {
     position: relative;
     text-align: center;
     color: #fff;
+    opacity: 0.9; /* Opacidad para el fondo */
 }
 
 .banner-content {
     max-width: 700px;
     padding: 20px;
+    background: rgba(0, 0, 0, 0.7); /* Fondo semitransparente para mejor legibilidad */
+    border-radius: 8px;
 }
 
 .banner-content h2 {
@@ -97,6 +101,12 @@ body {
     border: none;
     border-radius: 30px;
     font-size: 1.2em;
+    background: #333; /* Fondo oscuro para el input */
+    color: #fff; /* Texto blanco en el input */
+}
+
+.search-bar input::placeholder {
+    color: #bbb; /* Color del placeholder */
 }
 
 .market-tickers {
@@ -108,7 +118,7 @@ body {
 
 .ticker {
     padding: 10px 20px;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(255, 255, 255, 0.1); /* Fondo semitransparente */
     border-radius: 20px;
     font-size: 1.2em;
 }
@@ -120,14 +130,14 @@ body {
 .container {
     max-width: 1200px;
     padding: 20px;
-    margin-top: 20px;
+    margin-top: 100px; /* Espacio para la cabecera fija */
 }
 
 .modal, .lesson-card, .trade-card {
-    background-color: #fff;
+    background-color: #2c2c2c; /* Fondo gris oscuro */
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
     margin: 10px 0;
 }
 
@@ -135,17 +145,19 @@ input, button {
     margin-top: 10px;
     padding: 10px;
     border-radius: 4px;
-    border: 1px solid #ddd;
+    border: 1px solid #444; /* Borde gris oscuro */
+    background-color: #333; /* Fondo oscuro */
+    color: white; /* Texto blanco */
 }
 
 button {
-    background-color: #007bff;
-    color: white;
+    background-color: #6200ee; /* Botón color */
     cursor: pointer;
+    transition: background 0.3s;
 }
 
 button:hover {
-    background-color: #0056b3;
+    background-color: #0056b3; /* Color de fondo al pasar el ratón */
 }
 
 .page {
@@ -160,6 +172,6 @@ button:hover {
     height: 500px;
     width: 100%;
     margin-top: 20px;
+    border: 1px solid #444; /* Borde gris oscuro */
+    border-radius: 8px;
 }
-
-
