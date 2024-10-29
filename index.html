@@ -229,4 +229,19 @@
             saldo += cantidad * precioAccion;
             acciones -= cantidad;
             localStorage.setItem("saldo", saldo);
-            document
+            document.getElementById("balance").innerText = "Saldo: $" + saldo;
+            mostrarAccionesCompradas();
+            alert("Vendiste " + cantidad + " acciones de Apple.");
+        } else {
+            alert("Cantidad no válida.");
+        }
+    }
+
+    // Mostrar acciones compradas
+    function mostrarAccionesCompradas() {
+        document.getElementById("accionesCompradas").innerText = "Tienes " + acciones + " acciones de Apple.";
+    }
+</script>
+</body>
+</html>
+
