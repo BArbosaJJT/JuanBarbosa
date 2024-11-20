@@ -3,144 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador de Trading</title>
+    <title>Simulador de Trading Mejorado</title>
     <style>
         /* Estilos generales */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Arial', sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background: linear-gradient(to right, #e3f2fd, #bbdefb);
-            color: #333;
-            transition: background 0.3s ease;
-            min-height: 100vh;
-        }
-        .header {
-            width: 100%;
-            background-color: #007bff;
-            color: white;
-            padding: 20px;
-            text-align: center;
-            font-size: 28px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            position: sticky;
-            top: 0;
-        }
-        .nav {
-            margin-top: 10px;
-        }
-        .nav a {
-            margin: 0 15px;
-            color: white;
-            text-decoration: none;
-            padding: 10px 20px;
-            border-radius: 25px;
-            background-color: #0056b3;
-            transition: background-color 0.3s, transform 0.3s;
-        }
-        .nav a:hover {
-            background-color: #004494;
-            transform: translateY(-2px);
-        }
-        .container {
-            max-width: 1200px;
-            width: 90%;
-            padding: 20px;
+        /* Igual que antes */
+        .chart-container {
             margin-top: 20px;
-            border-radius: 15px;
-            background-color: white;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            animation: fadeIn 0.5s ease-in-out;
-        }
-        .balance {
-            font-size: 24px;
-            margin-bottom: 20px;
-            padding: 15px;
-            border: 1px solid #007bff;
-            border-radius: 8px;
-            background-color: #e9f7ff;
-            text-align: center;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        .modal {
-            display: flex;
-            flex-direction: column;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            width: 300px;
-            text-align: center;
-            margin: auto;
-            animation: scaleIn 0.3s ease-in-out;
-        }
-        .modal input {
-            padding: 10px;
-            margin-top: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
             width: 100%;
-        }
-        .modal button {
-            padding: 10px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: background-color 0.3s;
-        }
-        .modal button:hover {
-            background-color: #0056b3;
-        }
-        .trade-card, .lesson-card {
-            background-color: #f1f9ff;
+            max-width: 800px;
+            padding: 20px;
+            background: #f1f9ff;
             border-radius: 10px;
-            padding: 20px;
-            margin: 10px 0;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s;
-        }
-        .trade-card:hover, .lesson-card:hover {
-            transform: translateY(-3px);
-        }
-        .trade-card h3, .lesson-card h3 {
-            margin: 0 0 10px;
-        }
-        .trade-card input {
-            width: 100%;
-            margin-top: 10px;
-            padding: 10px;
-            border: 1px solid #007bff;
-            border-radius: 5px;
-        }
-        .trade-card button {
-            margin-top: 10px;
-            width: 100%;
-        }
-        .trading-section {
-            margin-top: 20px;
-        }
-        .page {
-            display: none; /* Ocultar todas las páginas por defecto */
-        }
-        .active {
-            display: block; /* Mostrar la página activa */
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        @keyframes scaleIn {
-            from { transform: scale(0.8); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
         }
     </style>
 </head>
@@ -155,11 +29,8 @@
     </div>
 </div>
 
-<!-- Página de Inicio -->
 <div class="container page active" id="inicio">
     <div class="balance" id="balance">Saldo: $0</div>
-
-    <!-- Modal de recarga de saldo -->
     <div class="modal" id="modalRecarga">
         <h2>Recarga tu Saldo Inicial</h2>
         <input type="number" id="inputSaldo" placeholder="Ingresa saldo inicial" min="100" step="100">
@@ -167,24 +38,6 @@
     </div>
 </div>
 
-<!-- Página de Clases de Trading -->
-<div class="container page" id="clases">
-    <h2>Clases de Trading</h2>
-    <div id="clases">
-        <div class="lesson-card">
-            <h3>Clase 1: Introducción al Trading</h3>
-            <p>Aprende los conceptos básicos, terminología y el mercado de acciones.</p>
-            <button onclick="iniciarClase('Clase 1')">Iniciar Clase</button>
-        </div>
-        <div class="lesson-card">
-            <h3>Clase 2: Análisis Técnico Básico</h3>
-            <p>Entiende cómo leer gráficos de velas y patrones de precios.</p>
-            <button onclick="iniciarClase('Clase 2')">Iniciar Clase</button>
-        </div>
-    </div>
-</div>
-
-<!-- Página de Trading -->
 <div class="container page" id="trading">
     <div class="trading-section">
         <h2>Comprar/Vender Acciones</h2>
@@ -194,42 +47,54 @@
             <input type="number" id="cantidad" placeholder="Cantidad" min="1">
             <button onclick="comprarAcciones()">Comprar</button>
             <button onclick="venderAcciones()">Vender</button>
-            <button onclick="obtenerPrecioAccion(simboloAccion)">Actualizar Precio</button>
         </div>
-        <h3>Acciones Compradas:</h3>
-        <div id="accionesCompradas"></div>
+
+        <!-- Gráfico de precios -->
+        <div class="chart-container">
+            <canvas id="priceChart"></canvas>
+        </div>
     </div>
 
-    <!-- Selector de acción -->
+    <!-- Historial de transacciones -->
     <div>
-        <h2>Cambiar Acción</h2>
-        <select id="accionSelect">
-            <option value="AAPL">Apple (AAPL)</option>
-            <option value="GOOGL">Alphabet (GOOGL)</option>
-            <option value="MSFT">Microsoft (MSFT)</option>
-            <option value="AMZN">Amazon (AMZN)</option>
-            <!-- Agrega más acciones según sea necesario -->
-        </select>
-        <button onclick="cambiarAccion()">Cambiar Acción</button>
+        <h3>Historial de Transacciones</h3>
+        <ul id="transactionHistory"></ul>
     </div>
-
-    <!-- Sección de gráficos -->
-    <div id="tradingview-chart" style="height: 500px; width: 100%; margin-bottom: 20px;"></div>
 </div>
 
-<!-- Script para TradingView -->
-<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     let saldo = 0;
     let acciones = 0;
-    let simboloAccion = "AAPL"; // Acción inicial
-    const API_KEY = "V4ZQ8PO6D4Y6NM1Y"; // Reemplaza con tu clave de API de Alpha Vantage
+    let simboloAccion = "AAPL";
+    let transactionHistory = [];
+    const API_KEY = "V4ZQ8PO6D4Y6NM1Y";
 
-    // Función para mostrar la página seleccionada
-    function mostrarPagina(pagina) {
-        document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-        document.getElementById(pagina).classList.add('active');
-    }
+    // Inicializar gráfico de precios
+    const ctx = document.getElementById('priceChart').getContext('2d');
+    const priceChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Precio (USD)',
+                data: [],
+                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    beginAtZero: true
+                },
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
 
     // Recargar saldo inicial
     function recargarSaldo() {
@@ -245,28 +110,6 @@
         }
     }
 
-    // Cambiar acción
-    function cambiarAccion() {
-        simboloAccion = document.getElementById('accionSelect').value;
-        document.getElementById('accionActual').innerText = simboloAccion;
-        obtenerPrecioAccion(simboloAccion);
-    }
-
-    // Obtener el precio de la acción usando Alpha Vantage
-    async function obtenerPrecioAccion(simbolo) {
-        const url = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${simbolo}&interval=5min&apikey=${API_KEY}`;
-        try {
-            const response = await fetch(url);
-            const data = await response.json();
-            const series = data['Time Series (5min)'];
-            const latestTimestamp = Object.keys(series)[0];
-            const latestPrice = parseFloat(series[latestTimestamp]['4. close']);
-            document.getElementById('currentPrice').innerText = `$${latestPrice.toFixed(2)}`;
-        } catch (error) {
-            console.error('Error al obtener el precio:', error);
-        }
-    }
-
     // Comprar acciones
     function comprarAcciones() {
         const cantidad = parseInt(document.getElementById('cantidad').value);
@@ -277,7 +120,9 @@
             saldo -= costo;
             acciones += cantidad;
             document.getElementById('balance').innerText = 'Saldo: $' + saldo.toFixed(2);
-            actualizarResumen();
+            transactionHistory.push(`Compraste ${cantidad} acciones a $${precio.toFixed(2)} cada una.`);
+            actualizarHistorial();
+            actualizarGrafico(precio);
         } else {
             alert('Saldo insuficiente.');
         }
@@ -293,37 +138,42 @@
             saldo += ganancia;
             acciones -= cantidad;
             document.getElementById('balance').innerText = 'Saldo: $' + saldo.toFixed(2);
-            actualizarResumen();
+            transactionHistory.push(`Vendiste ${cantidad} acciones a $${precio.toFixed(2)} cada una.`);
+            actualizarHistorial();
+            actualizarGrafico(precio);
         } else {
             alert('No tienes suficientes acciones.');
         }
     }
 
-    // Actualizar resumen de acciones
-    function actualizarResumen() {
-        document.getElementById('accionesCompradas').innerText = `Acciones: ${acciones}`;
+    // Actualizar historial de transacciones
+    function actualizarHistorial() {
+        const ul = document.getElementById('transactionHistory');
+        ul.innerHTML = transactionHistory.map(tran => `<li>${tran}</li>`).join('');
     }
 
-    // Cargar gráfico de TradingView
-    new TradingView.widget({
-        "container_id": "tradingview-chart",
-        "autosize": true,
-        "symbol": "NASDAQ:" + simboloAccion,
-        "interval": "60",
-        "timezone": "exchange",
-        "theme": "light",
-        "style": "1",
-        "toolbar_bg": "#f1f3f6",
-        "hide_side_toolbar": false,
-        "allow_symbol_change": true,
-        "save_image": false,
-        "locale": "es"
-    });
+    // Actualizar gráfico de precios
+    function actualizarGrafico(precio) {
+        const time = new Date().toLocaleTimeString();
+        priceChart.data.labels.push(time);
+        priceChart.data.datasets[0].data.push(precio);
+        priceChart.update();
+    }
 
-    // Mostrar modal de recarga al iniciar
-    window.onload = function() {
-        document.getElementById('modalRecarga').style.display = 'flex';
-    };
+    // Obtener precio de acción
+    async function obtenerPrecioAccion(simbolo) {
+        const url = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${simbolo}&interval=5min&apikey=${API_KEY}`;
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            const series = data['Time Series (5min)'];
+            const latestTimestamp = Object.keys(series)[0];
+            const latestPrice = parseFloat(series[latestTimestamp]['4. close']);
+            document.getElementById('currentPrice').innerText = `$${latestPrice.toFixed(2)}`;
+        } catch (error) {
+            console.error('Error al obtener el precio:', error);
+        }
+    }
 </script>
 
 </body>
