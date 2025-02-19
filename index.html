@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trading Simulado</title>
+    <title>Trading en Tiempo Real</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://s3.tradingview.com/tv.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -15,7 +16,7 @@
             padding: 20px;
         }
         .container {
-            max-width: 600px;
+            max-width: 800px;
             margin: auto;
             padding: 20px;
             background: rgba(255, 255, 255, 0.1);
@@ -23,23 +24,15 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(10px);
         }
-        h1 {
-            font-size: 28px;
-            margin-bottom: 15px;
-            animation: fadeIn 1s ease-in-out;
-        }
-        .balance {
+        h1 { font-size: 28px; margin-bottom: 15px; animation: fadeIn 1s ease-in-out; }
+        .balance, .profit-loss {
             font-size: 22px;
             padding: 10px;
             background: rgba(255, 255, 255, 0.2);
             border-radius: 8px;
             margin-bottom: 15px;
-            animation: bounceIn 1s ease-in-out;
         }
-        .select-container, .input-container {
-            margin: 10px 0;
-            animation: slideUp 1s ease-in-out;
-        }
+        .select-container, .input-container { margin: 10px 0; }
         select, input {
             width: 100%;
             padding: 10px;
@@ -61,23 +54,21 @@
             cursor: pointer;
             transition: transform 0.2s;
         }
-        button:hover {
-            transform: scale(1.05);
-        }
+        button:hover { transform: scale(1.05); }
         .buy { background: #4CAF50; }
         .sell { background: #D32F2F; }
         .price { font-size: 20px; margin: 10px 0; }
-        
+        .chart-container { margin-top: 20px; height: 400px; }
+
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes bounceIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        @keyframes slideUp { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1><i class="fa-solid fa-chart-line"></i> Simulador de Trading</h1>
+        <h1><i class="fa-solid fa-chart-line"></i> Trading en Tiempo Real</h1>
         <div class="balance" id="balance">Saldo: $1000</div>
+        <div class="profit-loss" id="profitLoss">Ganancia/Pérdida: $0</div>
         
         <div class="select-container">
             <label for="stockSelect">Selecciona una acción:</label>
@@ -97,11 +88,16 @@
 
         <button class="buy" onclick="comprarAcciones()"><i class="fa-solid fa-arrow-up"></i> Comprar</button>
         <button class="sell" onclick="venderAcciones()"><i class="fa-solid fa-arrow-down"></i> Vender</button>
+
+        <div class="chart-container">
+            <div id="tradingview_chart"></div>
+        </div>
     </div>
 
     <script>
         let saldo = 1000;
         let acciones = 0;
+        let precioCompra = 0;
         let simboloAccion = "AAPL";
         const API_KEY = "HCn56SEoNJi2AmlkwxOfvg5_TmwnPxpd";
 
@@ -113,6 +109,7 @@
                 const response = await fetch(url);
                 const data = await response.json();
                 document.getElementById('currentPrice').innerText = `Precio: $${data.latestPrice.toFixed(2)}`;
+                actualizarGrafico(simboloAccion);
             } catch (error) {
                 console.error('Error al obtener precio:', error);
                 document.getElementById('currentPrice').innerText = "Error al cargar precio.";
@@ -127,7 +124,9 @@
             if (saldo >= costo && cantidad > 0) {
                 saldo -= costo;
                 acciones += cantidad;
+                precioCompra = precio;
                 document.getElementById('balance').innerText = `Saldo: $${saldo.toFixed(2)}`;
+                actualizarGananciaPerdida();
                 alert(`Compra exitosa: ${cantidad} acciones de ${simboloAccion}`);
             } else {
                 alert('Saldo insuficiente o cantidad inválida.');
@@ -143,10 +142,29 @@
                 saldo += ganancia;
                 acciones -= cantidad;
                 document.getElementById('balance').innerText = `Saldo: $${saldo.toFixed(2)}`;
+                actualizarGananciaPerdida();
                 alert(`Venta exitosa: ${cantidad} acciones de ${simboloAccion}`);
             } else {
                 alert('No tienes suficientes acciones para vender.');
             }
+        }
+
+        function actualizarGananciaPerdida() {
+            const precioActual = parseFloat(document.getElementById('currentPrice').innerText.replace('Precio: $', ''));
+            const gananciaPerdida = (precioActual - precioCompra) * acciones;
+            document.getElementById('profitLoss').innerText = `Ganancia/Pérdida: $${gananciaPerdida.toFixed(2)}`;
+        }
+
+        function actualizarGrafico(simbolo) {
+            new TradingView.widget({
+                "container_id": "tradingview_chart",
+                "symbol": simbolo,
+                "theme": "dark",
+                "style": "1",
+                "locale": "es",
+                "width": "100%",
+                "height": "400"
+            });
         }
 
         window.onload = actualizarPrecio;
