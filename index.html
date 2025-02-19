@@ -3,178 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador de Trading Mejorado</title>
+    <title>Trading Simulado</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
-        /* Estilos generales */
-        /* Igual que antes */
-        .chart-container {
-            margin-top: 20px;
-            width: 100%;
-            max-width: 800px;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1E1E2F, #283149);
+            color: #fff;
+            text-align: center;
             padding: 20px;
-            background: #f1f9ff;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+        h1 {
+            font-size: 28px;
+            margin-bottom: 15px;
+            animation: fadeIn 1s ease-in-out;
+        }
+        .balance {
+            font-size: 22px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            animation: bounceIn 1s ease-in-out;
+        }
+        .select-container, .input-container {
+            margin: 10px 0;
+            animation: slideUp 1s ease-in-out;
+        }
+        select, input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 16px;
+            text-align: center;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            margin-top: 10px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        button:hover {
+            transform: scale(1.05);
+        }
+        .buy { background: #4CAF50; }
+        .sell { background: #D32F2F; }
+        .price { font-size: 20px; margin: 10px 0; }
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes bounceIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     </style>
 </head>
 <body>
 
-<div class="header">
-    Simulador de Trading
-    <div class="nav">
-        <a href="#inicio" onclick="mostrarPagina('inicio')">Inicio</a>
-        <a href="#clases" onclick="mostrarPagina('clases')">Clases de Trading</a>
-        <a href="#trading" onclick="mostrarPagina('trading')">Trading</a>
-    </div>
-</div>
-
-<div class="container page active" id="inicio">
-    <div class="balance" id="balance">Saldo: $0</div>
-    <div class="modal" id="modalRecarga">
-        <h2>Recarga tu Saldo Inicial</h2>
-        <input type="number" id="inputSaldo" placeholder="Ingresa saldo inicial" min="100" step="100">
-        <button onclick="recargarSaldo()">Recargar</button>
-    </div>
-</div>
-
-<div class="container page" id="trading">
-    <div class="trading-section">
-        <h2>Comprar/Vender Acciones</h2>
-        <div class="trade-card">
-            <h3>Acción: <span id="accionActual">Apple (AAPL)</span></h3>
-            <p>Precio actual: <span id="currentPrice">Cargando...</span></p>
-            <input type="number" id="cantidad" placeholder="Cantidad" min="1">
-            <button onclick="comprarAcciones()">Comprar</button>
-            <button onclick="venderAcciones()">Vender</button>
+    <div class="container">
+        <h1><i class="fa-solid fa-chart-line"></i> Simulador de Trading</h1>
+        <div class="balance" id="balance">Saldo: $1000</div>
+        
+        <div class="select-container">
+            <label for="stockSelect">Selecciona una acción:</label>
+            <select id="stockSelect" onchange="actualizarPrecio()">
+                <option value="AAPL">Apple (AAPL)</option>
+                <option value="GOOGL">Alphabet (GOOGL)</option>
+                <option value="MSFT">Microsoft (MSFT)</option>
+                <option value="AMZN">Amazon (AMZN)</option>
+            </select>
         </div>
 
-        <!-- Gráfico de precios -->
-        <div class="chart-container">
-            <canvas id="priceChart"></canvas>
+        <div class="price" id="currentPrice">Precio: Cargando...</div>
+
+        <div class="input-container">
+            <input type="number" id="cantidad" placeholder="Cantidad a comprar/vender" min="1">
         </div>
+
+        <button class="buy" onclick="comprarAcciones()"><i class="fa-solid fa-arrow-up"></i> Comprar</button>
+        <button class="sell" onclick="venderAcciones()"><i class="fa-solid fa-arrow-down"></i> Vender</button>
     </div>
 
-    <!-- Historial de transacciones -->
-    <div>
-        <h3>Historial de Transacciones</h3>
-        <ul id="transactionHistory"></ul>
-    </div>
-</div>
+    <script>
+        let saldo = 1000;
+        let acciones = 0;
+        let simboloAccion = "AAPL";
+        const API_KEY = "HCn56SEoNJi2AmlkwxOfvg5_TmwnPxpd";
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    let saldo = 0;
-    let acciones = 0;
-    let simboloAccion = "AAPL";
-    let transactionHistory = [];
-    const API_KEY = "V4ZQ8PO6D4Y6NM1Y";
-
-    // Inicializar gráfico de precios
-    const ctx = document.getElementById('priceChart').getContext('2d');
-    const priceChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: [],
-            datasets: [{
-                label: 'Precio (USD)',
-                data: [],
-                backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                x: {
-                    beginAtZero: true
-                },
-                y: {
-                    beginAtZero: true
-                }
+        async function actualizarPrecio() {
+            simboloAccion = document.getElementById('stockSelect').value;
+            const url = `https://cloud.iexapis.com/stable/stock/${simboloAccion}/quote?token=${API_KEY}`;
+            
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                document.getElementById('currentPrice').innerText = `Precio: $${data.latestPrice.toFixed(2)}`;
+            } catch (error) {
+                console.error('Error al obtener precio:', error);
+                document.getElementById('currentPrice').innerText = "Error al cargar precio.";
             }
         }
-    });
 
-    // Recargar saldo inicial
-    function recargarSaldo() {
-        const inputSaldo = document.getElementById('inputSaldo');
-        const valor = parseFloat(inputSaldo.value);
-        if (valor >= 100) {
-            saldo = valor;
-            document.getElementById('balance').innerText = 'Saldo: $' + saldo.toFixed(2);
-            inputSaldo.value = '';
-            document.getElementById('modalRecarga').style.display = 'none';
-        } else {
-            alert('La recarga mínima es de $100.');
+        function comprarAcciones() {
+            const cantidad = parseInt(document.getElementById('cantidad').value);
+            const precio = parseFloat(document.getElementById('currentPrice').innerText.replace('Precio: $', ''));
+            const costo = cantidad * precio;
+
+            if (saldo >= costo && cantidad > 0) {
+                saldo -= costo;
+                acciones += cantidad;
+                document.getElementById('balance').innerText = `Saldo: $${saldo.toFixed(2)}`;
+                alert(`Compra exitosa: ${cantidad} acciones de ${simboloAccion}`);
+            } else {
+                alert('Saldo insuficiente o cantidad inválida.');
+            }
         }
-    }
 
-    // Comprar acciones
-    function comprarAcciones() {
-        const cantidad = parseInt(document.getElementById('cantidad').value);
-        const precio = parseFloat(document.getElementById('currentPrice').innerText.replace('$', ''));
-        const costo = cantidad * precio;
+        function venderAcciones() {
+            const cantidad = parseInt(document.getElementById('cantidad').value);
+            const precio = parseFloat(document.getElementById('currentPrice').innerText.replace('Precio: $', ''));
+            const ganancia = cantidad * precio;
 
-        if (saldo >= costo) {
-            saldo -= costo;
-            acciones += cantidad;
-            document.getElementById('balance').innerText = 'Saldo: $' + saldo.toFixed(2);
-            transactionHistory.push(`Compraste ${cantidad} acciones a $${precio.toFixed(2)} cada una.`);
-            actualizarHistorial();
-            actualizarGrafico(precio);
-        } else {
-            alert('Saldo insuficiente.');
+            if (acciones >= cantidad && cantidad > 0) {
+                saldo += ganancia;
+                acciones -= cantidad;
+                document.getElementById('balance').innerText = `Saldo: $${saldo.toFixed(2)}`;
+                alert(`Venta exitosa: ${cantidad} acciones de ${simboloAccion}`);
+            } else {
+                alert('No tienes suficientes acciones para vender.');
+            }
         }
-    }
 
-    // Vender acciones
-    function venderAcciones() {
-        const cantidad = parseInt(document.getElementById('cantidad').value);
-        const precio = parseFloat(document.getElementById('currentPrice').innerText.replace('$', ''));
-        const ganancia = cantidad * precio;
-
-        if (acciones >= cantidad) {
-            saldo += ganancia;
-            acciones -= cantidad;
-            document.getElementById('balance').innerText = 'Saldo: $' + saldo.toFixed(2);
-            transactionHistory.push(`Vendiste ${cantidad} acciones a $${precio.toFixed(2)} cada una.`);
-            actualizarHistorial();
-            actualizarGrafico(precio);
-        } else {
-            alert('No tienes suficientes acciones.');
-        }
-    }
-
-    // Actualizar historial de transacciones
-    function actualizarHistorial() {
-        const ul = document.getElementById('transactionHistory');
-        ul.innerHTML = transactionHistory.map(tran => `<li>${tran}</li>`).join('');
-    }
-
-    // Actualizar gráfico de precios
-    function actualizarGrafico(precio) {
-        const time = new Date().toLocaleTimeString();
-        priceChart.data.labels.push(time);
-        priceChart.data.datasets[0].data.push(precio);
-        priceChart.update();
-    }
-
-    // Obtener precio de acción
-    async function obtenerPrecioAccion(simbolo) {
-        const url = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${simbolo}&interval=5min&apikey=${API_KEY}`;
-        try {
-            const response = await fetch(url);
-            const data = await response.json();
-            const series = data['Time Series (5min)'];
-            const latestTimestamp = Object.keys(series)[0];
-            const latestPrice = parseFloat(series[latestTimestamp]['4. close']);
-            document.getElementById('currentPrice').innerText = `$${latestPrice.toFixed(2)}`;
-        } catch (error) {
-            console.error('Error al obtener el precio:', error);
-        }
-    }
-</script>
-
+        window.onload = actualizarPrecio;
+    </script>
 </body>
 </html>
