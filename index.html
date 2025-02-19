@@ -23,10 +23,11 @@
             border-radius: 15px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(10px);
+            animation: fadeIn 1s ease-in-out;
         }
-        h1 { font-size: 28px; margin-bottom: 15px; animation: fadeIn 1s ease-in-out; }
-        .balance, .profit-loss {
-            font-size: 22px;
+        h1 { font-size: 28px; margin-bottom: 15px; }
+        .balance, .profit-loss, .ranking {
+            font-size: 20px;
             padding: 10px;
             background: rgba(255, 255, 255, 0.2);
             border-radius: 8px;
@@ -36,7 +37,6 @@
         select, input {
             width: 100%;
             padding: 10px;
-            margin-top: 5px;
             border: none;
             border-radius: 8px;
             background: rgba(255, 255, 255, 0.2);
@@ -59,7 +59,14 @@
         .sell { background: #D32F2F; }
         .price { font-size: 20px; margin: 10px 0; }
         .chart-container { margin-top: 20px; height: 400px; }
-
+        .ad-container {
+            margin-top: 20px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            font-size: 16px;
+            color: yellow;
+        }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
@@ -69,6 +76,7 @@
         <h1><i class="fa-solid fa-chart-line"></i> Trading en Tiempo Real</h1>
         <div class="balance" id="balance">Saldo: $1000</div>
         <div class="profit-loss" id="profitLoss">Ganancia/Pérdida: $0</div>
+        <div class="ranking">🏆 Top Traders: Juan, María, Pedro</div>
         
         <div class="select-container">
             <label for="stockSelect">Selecciona una acción:</label>
@@ -88,9 +96,14 @@
 
         <button class="buy" onclick="comprarAcciones()"><i class="fa-solid fa-arrow-up"></i> Comprar</button>
         <button class="sell" onclick="venderAcciones()"><i class="fa-solid fa-arrow-down"></i> Vender</button>
+        <button class="share" onclick="compartirWhatsApp()"><i class="fa-brands fa-whatsapp"></i> Compartir en WhatsApp</button>
 
         <div class="chart-container">
             <div id="tradingview_chart"></div>
+        </div>
+
+        <div class="ad-container">
+            📢 Publicidad: ¡Consigue bonos gratis en nuestra app de trading!
         </div>
     </div>
 
@@ -100,6 +113,11 @@
         let precioCompra = 0;
         let simboloAccion = "AAPL";
         const API_KEY = "HCn56SEoNJi2AmlkwxOfvg5_TmwnPxpd";
+
+        function playSound(type) {
+            let sound = new Audio(type === 'buy' ? 'buy.mp3' : 'sell.mp3');
+            sound.play();
+        }
 
         async function actualizarPrecio() {
             simboloAccion = document.getElementById('stockSelect').value;
@@ -112,7 +130,6 @@
                 actualizarGrafico(simboloAccion);
             } catch (error) {
                 console.error('Error al obtener precio:', error);
-                document.getElementById('currentPrice').innerText = "Error al cargar precio.";
             }
         }
 
@@ -127,32 +144,17 @@
                 precioCompra = precio;
                 document.getElementById('balance').innerText = `Saldo: $${saldo.toFixed(2)}`;
                 actualizarGananciaPerdida();
+                playSound('buy');
                 alert(`Compra exitosa: ${cantidad} acciones de ${simboloAccion}`);
             } else {
                 alert('Saldo insuficiente o cantidad inválida.');
             }
         }
 
-        function venderAcciones() {
-            const cantidad = parseInt(document.getElementById('cantidad').value);
-            const precio = parseFloat(document.getElementById('currentPrice').innerText.replace('Precio: $', ''));
-            const ganancia = cantidad * precio;
-
-            if (acciones >= cantidad && cantidad > 0) {
-                saldo += ganancia;
-                acciones -= cantidad;
-                document.getElementById('balance').innerText = `Saldo: $${saldo.toFixed(2)}`;
-                actualizarGananciaPerdida();
-                alert(`Venta exitosa: ${cantidad} acciones de ${simboloAccion}`);
-            } else {
-                alert('No tienes suficientes acciones para vender.');
-            }
-        }
-
-        function actualizarGananciaPerdida() {
-            const precioActual = parseFloat(document.getElementById('currentPrice').innerText.replace('Precio: $', ''));
-            const gananciaPerdida = (precioActual - precioCompra) * acciones;
-            document.getElementById('profitLoss').innerText = `Ganancia/Pérdida: $${gananciaPerdida.toFixed(2)}`;
+        function compartirWhatsApp() {
+            const mensaje = `🔥 Estoy operando en trading real y ganando dinero con ${simboloAccion}. Únete ahora!`;
+            const url = `https://wa.me/?text=${encodeURIComponent(mensaje)}`;
+            window.open(url, '_blank');
         }
 
         function actualizarGrafico(simbolo) {
@@ -171,4 +173,3 @@
     </script>
 </body>
 </html>
-
