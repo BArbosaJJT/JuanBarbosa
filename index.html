@@ -26,150 +26,90 @@
             animation: fadeIn 1s ease-in-out;
         }
         h1 { font-size: 28px; margin-bottom: 15px; }
-        .balance, .profit-loss, .ranking {
+        .balance, .profit-loss {
             font-size: 20px;
             padding: 10px;
             background: rgba(255, 255, 255, 0.2);
             border-radius: 8px;
             margin-bottom: 15px;
         }
-        .select-container, .input-container { margin: 10px 0; }
-        select, input {
-            width: 100%;
+        .ranking {
+            font-size: 20px;
             padding: 10px;
-            border: none;
+            background: rgba(0, 0, 0, 0.5);
             border-radius: 8px;
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            font-size: 16px;
-            text-align: center;
+            margin-bottom: 15px;
         }
-        button {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            font-size: 18px;
-            margin-top: 10px;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        button:hover { transform: scale(1.05); }
-        .buy { background: #4CAF50; }
-        .sell { background: #D32F2F; }
         .price { font-size: 20px; margin: 10px 0; }
-        .chart-container { margin-top: 20px; height: 400px; }
-        .ad-container {
+        .chart-container, .tradingview-container {
             margin-top: 20px;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.2);
+            height: 400px;
+            background: black;
             border-radius: 8px;
-            font-size: 16px;
-            color: yellow;
         }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
-
     <div class="container">
         <h1><i class="fa-solid fa-chart-line"></i> Trading en Tiempo Real</h1>
         <div class="balance" id="balance">Saldo: $1000</div>
         <div class="profit-loss" id="profitLoss">Ganancia/Pérdida: $0</div>
-        <div class="ranking">🏆 Top Traders: Juan, María, Pedro</div>
-        
-        <div class="select-container">
-            <label for="stockSelect">Selecciona una acción:</label>
-            <select id="stockSelect" onchange="actualizarPrecio()">
-                <option value="AAPL">Apple (AAPL)</option>
-                <option value="GOOGL">Alphabet (GOOGL)</option>
-                <option value="MSFT">Microsoft (MSFT)</option>
-                <option value="AMZN">Amazon (AMZN)</option>
-            </select>
-        </div>
-
+        <div class="ranking" id="ranking">🏆 Ranking: Cargando...</div>
         <div class="price" id="currentPrice">Precio: Cargando...</div>
-
-        <div class="input-container">
-            <input type="number" id="cantidad" placeholder="Cantidad a comprar/vender" min="1">
-        </div>
-
-        <button class="buy" onclick="comprarAcciones()"><i class="fa-solid fa-arrow-up"></i> Comprar</button>
-        <button class="sell" onclick="venderAcciones()"><i class="fa-solid fa-arrow-down"></i> Vender</button>
-        <button class="share" onclick="compartirWhatsApp()"><i class="fa-brands fa-whatsapp"></i> Compartir en WhatsApp</button>
 
         <div class="chart-container">
             <div id="tradingview_chart"></div>
         </div>
-
-        <div class="ad-container">
-            📢 Publicidad: ¡Consigue bonos gratis en nuestra app de trading!
-        </div>
     </div>
 
     <script>
-        let saldo = 1000;
-        let acciones = 0;
-        let precioCompra = 0;
-        let simboloAccion = "AAPL";
-        const API_KEY = "HCn56SEoNJi2AmlkwxOfvg5_TmwnPxpd";
+        let usuarios = [
+            { nombre: "Juan", saldo: 1200 },
+            { nombre: "María", saldo: 1500 },
+            { nombre: "Pedro", saldo: 1100 }
+        ];
 
-        function playSound(type) {
-            let sound = new Audio(type === 'buy' ? 'buy.mp3' : 'sell.mp3');
-            sound.play();
+        function actualizarRanking() {
+            usuarios.sort((a, b) => b.saldo - a.saldo);
+            let rankingHTML = "🏆 Ranking:<br>";
+            usuarios.forEach((usuario, index) => {
+                rankingHTML += `${index + 1}. ${usuario.nombre}: $${usuario.saldo}<br>`;
+            });
+            document.getElementById("ranking").innerHTML = rankingHTML;
         }
 
-        async function actualizarPrecio() {
-            simboloAccion = document.getElementById('stockSelect').value;
-            const url = `https://cloud.iexapis.com/stable/stock/${simboloAccion}/quote?token=${API_KEY}`;
-            
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
-                document.getElementById('currentPrice').innerText = `Precio: $${data.latestPrice.toFixed(2)}`;
-                actualizarGrafico(simboloAccion);
-            } catch (error) {
-                console.error('Error al obtener precio:', error);
-            }
+        function actualizarPrecio() {
+            fetch("https://api.coingecko.com/api/v3/simple/price?ids=apple&vs_currencies=usd")
+                .then(response => response.json())
+                .then(data => {
+                    let precio = data.apple.usd;
+                    document.getElementById("currentPrice").innerText = `Precio: $${precio}`;
+                })
+                .catch(error => console.error("Error al obtener precio:", error));
         }
 
-        function comprarAcciones() {
-            const cantidad = parseInt(document.getElementById('cantidad').value);
-            const precio = parseFloat(document.getElementById('currentPrice').innerText.replace('Precio: $', ''));
-            const costo = cantidad * precio;
-
-            if (saldo >= costo && cantidad > 0) {
-                saldo -= costo;
-                acciones += cantidad;
-                precioCompra = precio;
-                document.getElementById('balance').innerText = `Saldo: $${saldo.toFixed(2)}`;
-                actualizarGananciaPerdida();
-                playSound('buy');
-                alert(`Compra exitosa: ${cantidad} acciones de ${simboloAccion}`);
-            } else {
-                alert('Saldo insuficiente o cantidad inválida.');
-            }
-        }
-
-        function compartirWhatsApp() {
-            const mensaje = `🔥 Estoy operando en trading real y ganando dinero con ${simboloAccion}. Únete ahora!`;
-            const url = `https://wa.me/?text=${encodeURIComponent(mensaje)}`;
-            window.open(url, '_blank');
-        }
-
-        function actualizarGrafico(simbolo) {
+        function cargarGraficoTradingView() {
             new TradingView.widget({
                 "container_id": "tradingview_chart",
-                "symbol": simbolo,
+                "symbol": "AAPL",
                 "theme": "dark",
                 "style": "1",
                 "locale": "es",
                 "width": "100%",
-                "height": "400"
+                "height": "400",
+                "interval": "D",
+                "autosize": true,
+                "timezone": "Etc/UTC"
             });
         }
 
-        window.onload = actualizarPrecio;
+        window.onload = function() {
+            actualizarRanking();
+            actualizarPrecio();
+            setInterval(actualizarPrecio, 60000); // Actualizar cada minuto
+            cargarGraficoTradingView();
+        };
     </script>
 </body>
 </html>
