@@ -1,3 +1,14 @@
+.imagen-tralalero {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.imagen-tralalero img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
 body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background: linear-gradient(to right, #74ebd5, #9face6);
